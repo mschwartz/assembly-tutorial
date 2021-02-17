@@ -138,7 +138,7 @@ Multiplication of two values requires a double-sized result, or you lose a lot m
 
 ## Boolean Algebra
 
-Boolean Algebra is a form of math that we use to deal with true/false values.  We use Boolean Algebra all the time in various programming languages, with operators like & (AND), | (OR), ^ (exclusive XOR, or XOR), and ! (NOT), ~ (2's complement) and so on.  These operators are equivalent to "math-like" operators.
+Boolean Algebra is a form of math that we use to deal with true/false values.  We use Boolean Algebra all the time in various programming languages, with operators like & (AND), | (OR), ^ (exclusive XOR, or XOR), and ! (NOT), ~ (also NOT) and so on.  These operators are equivalent to "math-like" operators.
 
 The simplest way to visualize Boolean Algebra is using single bit values and truth tables.  0 = false, 1 = true.  For single bit value operands, there are only (always) 4 combinations possible.
 
@@ -164,7 +164,7 @@ XOR (if only one operand is true, the result is true)
 
 The ! (NOT) operator only has one operand.  If the operand is true, the result is false.  If the operand is false, the result is true.  The result is also known as a 1's complement, or we've just inverted the state of all the bits.
 
-The ~ (2's complement) operator inverts the bits in the word and adds 1 to it.
+The ~ (1's complement) operator inverts the bits in the word.
 
 If we look at the operands as byte values, we have something like:
 ```
@@ -221,6 +221,8 @@ n | (1<<3)
 To clear bit 3:
 
 n & ~(1<<3)
+
+Note that 1<<3 = 01000b, and ~(1<<3) is ~01000b or 00111b.  When you AND with 00111b, you are clearing bit 3.
 ```
 
 ## Memory
