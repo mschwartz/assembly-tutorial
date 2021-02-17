@@ -77,12 +77,13 @@ Let's look at the unsigned value ranges for the common word sizes:
 4 bits: 0-15
 5 bits, 0-31
 ...
+```
+
 
 The pattern here is that the max value is 2 to the number of bits minus 1.  That is for 5 bits, the max value 31 is 2 to the 5th power (32) minus 1.
 
 When we convert a binary byte to hex, we visualize it something like this:
 
-```
 76543210 is 7654 3210
 ```
 We've grouped the bits as two nybbles.  We can then convert the two nybbles (4 bits each) to two hex digits.
