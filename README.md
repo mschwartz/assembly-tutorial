@@ -6,6 +6,8 @@ How CPUs work has become something of a lost art.  There are a small percentage 
 
 Assembly language was one of the first languages I ever learned.  Back in the early/mid 1970s, my high school classes progressed from BASIC to FORTRAN IV, to BAL (Basic Assembly Language) for the IBM 360 to which we had access.  One of the earliest lessons we were taught used a cardboard teaching aid, CARDIAC.  CARDIAC stands for "CARDboard Illiustrative Aid to Computation"; it wwas developed at Bell Labs, which was a big deal back then (Unix was invented there, as well as the C programming language).
 
+See https://www.cs.drexel.edu/~bls96/museum/cardiac.html.
+
 With CARDIAC, you simulated the memory, operation, and CPU cycles of a mythical CPU.  The numbers and instructions for this CPU were in base 10, so the student doesn't have to understand how to convert to the common base 2, base 8, 8 or base 16 used in computing.  CARDIAC provided a cardboard device that had representation for memory, program steps, and ALU (math and logic operations).
 
 You wrote your program and variables on the cardboard and then step by step, followed the program and performed the operations for each step.  The steps are identified by a single digit, 0-9:
@@ -259,7 +261,7 @@ Each instruction uses 1 or more "clock cycles," depending on the complexity of t
 
 ## x64/AMD64 Registers
 
-For all intents and purposes, the Intel and AMD processors have the same registers until you get into exotic features (like hardware video decoding).  
+For all intents and purposes, the Intel and AMD processors have the same registers until you get into exotic features (like hardware video decoding).  I use the term x64 and AMD64 interchangable throughout this tutorial.
 
 ### General Purpose Registers
 
@@ -267,10 +269,28 @@ You have 4 general purpose registers, A, B, C, and D, though we don't use these 
 
 When we use the registers whose size are smaller than 64 bits, the remaining bits in the register are not affected.  For example, if AX contains 0x0102 and we load 0x03 into AL, AX will contain 0x0103.  This will only matter if you load bytes into registers and add word registers together, in error.  There might be tricks you play to take advantage of the nature of the register loads/stores.
 
+AMD64 and x64 add 8 more general purpose registers, R8, R9, R10, R11, R12, R13, R14, and R15.  These are accessed as 8, 16, 33, and 64 bit registers.  R8D through R15D (32 bits), R8W-R15W (16 bits), R8B-R15B (8 bits), and R8-R15 (64 bits).
 
+### Special Purpose Registers
 
+THe RCX/RCX/CX (CX) register doubles as a counter for dedicated instructions.  The AMD64 instruction set includes instructions to fill, copy, and compare memory, and loops that use this register as the number of bytes/words/dwords/qwords to fill/copy/compare.  The special loop instructions use this register as the loop counter as well.
 
+The RSI/ESI/SI and RDI/EDI/DI/ registers are general purpose "source" and "destination" registers for the fill, copy, and compare instructions.
 
+The RBP register is a general purpose register that is typically used as a base address register or by high level language compilers to maintain function stack frames (arguments, return address, and local variables allocated on the stack).
 
-https://www.cs.drexel.edu/~bls96/museum/cardiac.html
+### CPU Control Registers
+
+#### Stack 
+The RSP register contains the address of the last thing pushed on the processor stack. You can push registers on the stack to preserve their values, you can pop them to restore their values, address values already on the stack by index, etc.
+
+#### Instruction Pointer
+The RIP register contains the address of the next instruction to be executed.  The CPU automatically adds the correct number to it as it executes instructions to keep it pointed at the correct next instruction.  When you call a subroutine, the RIP is pushed on the RSP stack and RIP is loaded with the address of the subroutine.  When the subroutine returns, the RIP that was pushed before the call is popped from the stack into RIP.  Execution continues at the instruction after the call.
+
+#### Flags
+The FLAGS register is 64 bits containing information provided by the CPU to the program, and commands from the program to the CPU.  Not all the bits are used.  See https://en.wikipedia.org/wiki/FLAGS_register.
+
+An example of the bits in FLAGS set by the CPU is the Carry Flag.  It is set when you have a carry after an arithmetic operation.  For example, if you add 1 to the AL regsister that contains 255, you will get AL=0, Carry = 1.  If you add 1 to AL=254, the Carry will be 0.
+
+An example of the bits in the FLAGS set by the program is the Direction Flag.  If this is 0, the fill/copy/etc. instructions work from start address forward (auto-increments SI and DI).  If this is 1, the operations are done backward (auto-decrement).
 
