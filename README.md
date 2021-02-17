@@ -224,7 +224,10 @@ To clear bit 3:
 
 n & ~(1<<3)
 
-Note that 1<<3 = 01000b, and ~(1<<3) is ~01000b or 00111b.  When you AND with 00111b, you are clearing bit 3.
+Note that 1<<3 = 01000b, 
+and ~(1<<3) is  ~01000b 
+              or 00111b.   (all the bits are inverted)
+When you AND with 00111b, you are clearing bit 3.
 ```
 
 ## Memory
