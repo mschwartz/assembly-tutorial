@@ -1,0 +1,25 @@
+     1                                  ; use the build.sh script to assemble and link this
+     2                                  
+     3                                  global start
+     4                                  
+     5                                  
+     6                                  section .text
+     7                                  
+     8                                  start:
+     9 00000000 B804000002                  mov     rax, 0x2000004 ; write
+    10 00000005 BF01000000                  mov     rdi, 1 ; stdout
+    11 0000000A 48BE-                       mov     rsi, msg
+    11 0000000C [0000000000000000] 
+    12 00000014 BA0E000000                  mov     rdx, msg.len
+    13 00000019 0F05                        syscall
+    14                                  
+    15 0000001B B801000002                  mov     rax, 0x2000001 ; exit
+    16 00000020 BF00000000                  mov     rdi, 0
+    17 00000025 0F05                        syscall
+    18                                  
+    19                                  
+    20                                  section .data
+    21                                  
+    22 00000000 48656C6C6F2C20776F-     msg:    db      "Hello, world!", 10
+    22 00000009 726C64210A         
+    23                                  .len:   equ     $ - msg

@@ -194,6 +194,8 @@ A typical use of the AND operator is to clear bits in a value.  If we AND with a
 
 A typical use of the OR operator is tto set bits in a value.  If we OR with a value that is a power of 2, we are simply setting a bit.  n OR 4 sets bit 3 in n.
 
+A great use of the AND operator is to do a modulo of a number to a power of 2.  For example, AND with 3 gets you a result between 0 and 2.  AND with 7 gets y ou a result between 0 and 8.
+
 ## Bit Shifting
 
 You can shift a byte to the left (<< operator in C) 1-7 bits.  For example:
@@ -300,4 +302,302 @@ The FLAGS register is 64 bits containing information provided by the CPU to the 
 An example of the bits in FLAGS set by the CPU is the Carry Flag.  It is set when you have a carry after an arithmetic operation.  For example, if you add 1 to the AL regsister that contains 255, you will get AL=0, Carry = 1.  If you add 1 to AL=254, the Carry will be 0.
 
 An example of the bits in the FLAGS set by the program is the Direction Flag.  If this is 0, the fill/copy/etc. instructions work from start address forward (auto-increments SI and DI).  If this is 1, the operations are done backward (auto-decrement).
+
+The FLAGS register is there to use, but we might really only directly use the Carry bit and Direction bit.  We might use the Carry bit to return a true/false result from a function.  The CLC and STC instructions clear and set the Carry bit.  
+
+The various branch instructions use the Carry and Zero bits internally.
+
+There are several instructions that set and clear these bits, programatically.
+
+# AMD64 Instruction Set
+
+You will learn the instruction set as you go.  The instruction set is documented as a reference manual, not a programming manual.  That is, each instruction is documented as to what it does.  But there is no particular "how to use this instruction" documentation.  "
+
+You can find the instruction set documented on various Web Sites.  The best source is the Intel Programmer's Manual or the AMD64 Programmer's Manual.
+
+Here is a decent Web Page that lists the instructions in a table, one line per instruction with a short description.
+
+https://www.felixcloutier.com/x86/
+
+There are over 1500 instructions, from AAA to XTEST that we can use.  Too many to document every one here. However, there are much fewer commonly used instructions that we use for most things.
+
+The format of a line of source code in assembly is:
+```
+[optional label] instruction
+or
+[optional label] instruction operand
+or
+[optional label] instruction operand1, operand2
+```
+
+
+When assembled, the instructions are encoded as opcode and operands as a sequence of bytes.  The CPU is able to execute these instructions.
+
+## Assembly source
+
+In assembly source, the NASM assembler expects operands to be specified as ```destination, source``` (Intel syntax) while the gas assembler expects operands to be specified as ```source, destination``` (AT&T syntax).  The assembler language for the various CPUs (e.g. MC68000, AMD64, ARM, etc.) each specify whether the left operand is source or destination.  The gas assembler can be used to assemble source for various processors so it defaults to source, destination format, though you can tell it to use Intel (NASM) syntax.
+
+In Intel syntax source programs, the semicolon (;) character introduces the start of a comment.  All characters from that point on, to the end of the line, are ignored.
+
+Before we look at some of these instructions, we need to look at addressing modes.
+
+## Addressing Modes
+
+Addressing modes are the means by which operands to instructions are described and how they execute.  For example, Register operands indicate specific registers, but memory operands can be addressed through a variety of combinations of offsets and/or regsister contents.
+
+To examine the addressing modes, we'll use the MOV instruction, which copies a value in a register to memory or loads a value to a register from memory.
+
+The source and/or destination operand is specified using one of the addressing modes.
+
+The instruction-set/addressing.asm file contains example usage of the various addressing modes.
+
+### Register Operands
+
+Rather than memory being the source or destination, the operand is a register.  For example, 
+```
+	mov rax, rbx ; moves contents of rbx register into the rax register.
+```
+
+### Direct Memory Operands (better known as Immediate operands)
+
+This mode moves a constant into a register.  The constant is encoded in the instruction, after the opcode. For example,
+```
+        mov rax, 10 	; source operand is a constant
+```
+
+#### Indirect Operands
+
+This mode uses a register as the address of a memory location to be operated on (e.g. load from, store to).  For example,
+```
+        mov (rax), rbx   ; store contents of rbx to memory location contained in rax 
+```
+
+#### Indirect with Displacement
+
+This mode uses a register as the base address of a memory location, added to a fixed offset, to determine the address of a memory location to be operated on.  For example,
+```
+        mov rax, 24(rbx)  ; access memory at 24 + contents of rbx
+```
+The purpose of this addressing mode is to facilitate accessing a structure and its members.  Consider:
+```
+struct {
+  char *name,
+       *address,
+	   *phone;
+} person;
+person.name = nullptr;
+person.address = nullptr;
+person.phone = nullptr;
+
+```
+
+In assembly, we'd do something like this:
+```
+NAME equ 0
+ADDRESS equ 8
+PHONE equ 12
+
+mov rsi, person  ; load address of person into RSI
+mov rax, 0       ; nullptr
+mov NAME[rsi], rax
+mov ADDRESS[rsi], rax
+mov PHONE[rsi], rax
+```
+
+Another use of this addressing mode is for stack frames for a language such as "C", especially for calling subroutines.  A subroutine may have arguments passed to it on the stack, by value (like an int) or reference (like an address of a struct or string or whatever).  A subroutine may need its own local variables.  When a subroutine is called recursively, each recursive call must prepare the stack so it has arguments to pass, and allow for the next iteration's local variables on the stack.
+
+The RBP register is used for stack frames when stack conventions are used for calling functions in "C".  
+
+The calling function pushes arguments on the stack (right to left).  That is, for foo(a, b, c);, the compiler will generate code to push c, then b, then a.
+
+Upon entry to a function, RBP contains the stack frame pointer for the calling function.  The compiler generates code to immediately push it.  Then the RSP stack pointer is loaded into RBP.  
+
+At this point,  RBP points to the return address on the stack, and negative offsets from RBP are the arguments to the function.  
+
+For local variables, the compiler generates a subtract to RSP to make the desired space on the stack.  When the function calls another, RSP is after the allocated variables, so it all works.  Positive offsets from RBP are used to access the local variables.
+
+To return, the compiler generates code to pop rbp (restore caller's stack frame) and returns.  The calling code has to adjust RSP to remove the pushed arguments.
+
+Let's see a little bit of example code and the assembly generated by the compiler.  Note that this is in AT&T syntax, ```source, destination``` format.  The register names are prefixed with %.
+
+```
+// source
+void bar(int a, int b) {
+    int x, y;
+
+    x = 555;
+    y = a+b;
+}
+
+void foo(void) {
+    bar(111,222);
+}
+
+; compiles to:
+bar:
+    pushl   %ebp
+    movl    %esp, %ebp
+    subl    $16, %esp
+    movl    $555, -4(%ebp)
+    movl    12(%ebp), %eax
+    movl    8(%ebp), %edx
+    addl    %edx, %eax
+    movl    %eax, -8(%ebp)
+    leave
+    ret
+
+foo:
+    pushl   %ebp
+    movl    %esp, %ebp
+    subl    $8, %esp
+    movl    $222, 4(%esp)
+    movl    $111, (%esp)
+    call    bar
+    leave
+    ret
+```
+
+Note the use of indirect with offset addressing modes!
+
+#### indirect with displacement and scaled index
+
+This addressing mode is used to access array elements.  To illustrate how this mode works:
+
+* an array of bytes, each element is 1 byte each
+* an array of words, each element is 2 bytes each
+* an array of dwords, each element is 4 bytes each
+* an array of qwords, each element is 8 bytes each
+
+As you index the array, you have to "scale" the index before adding it to the base of the array.  The scale operating assures we are addressing byte, word, dword, or qword elements properly.  
+
+```
+        mov member(rsi, rbx, 4), eax   ; store dword in eax at rsi+ member(offset) + rbx * 4
+```
+The above example stores a dword into memory.  We are accessing a struct member that is an array of dwords.  The rbx register contains the index into the array, [0 ... array.length-1].  The 4 is the scale factor, or size of the dword.  
+
+Note that member may be 0 - in this case, rsi simply contains the address of the array.
+
+
+
+# Hello, World
+
+See hello-world/ directory for a build script and this assembly source.
+
+```
+; Use the build.sh
+
+global start
+
+
+section .text
+
+start:
+    mov     rax, 0x2000004 ; write
+    mov     rdi, 1 ; stdout
+    mov     rsi, msg
+    mov     rdx, msg.len
+    syscall
+
+    mov     rax, 0x2000001 ; exit
+    mov     rdi, 0
+    syscall
+
+
+section .data
+
+msg:    db      "Hello, world!", 10
+.len:   equ     $ - msg
+```
+
+It works.  Here's the output:
+
+```
+# ./build.sh
+# ./hello
+Hello, World!
+#
+```
+
+## How it works
+
+MacOS provides quite a few syscalls, or operating system calls that we can call from any language.  The C libraries contain code similar to our code above, to write strings to a file.  For our purposes we use the file number for stdout to write to he console.
+
+For most C calls that are not provided by a library or the standard C/C++ libraries, there is a syscall.  For example, malloc and free are provided by libc so there is no syscall for it.  However, sbrk() is not provided by the libraries and is provided as a syscall.
+
+The syscalls take arguments in the CPU registers.  RAX contains the syscall number (one for write, one for exit in the above).
+
+
+# Commonly Used Instructions
+
+## Aritmetic
+
+ADC - add a value, plus 
+ADD - add two registers together
+DEC - decrement by 1
+DIV - unsigned divide
+IDIV - signed divide
+IMUL - signed multiply
+INC - increment by 1
+MUL - unsigned multiply
+NEG - two's complement (multiply by -1)
+SBB - subtract with borrow (carry flag)
+SUB - subtract
+LEA - load effective address (formed by some expression / addressing mode) into register
+
+## Boolean Algebra
+AND - logical AND to registers together
+NOT - one's complement (invert all the bits in the operand)
+OR - logical OR
+XOR - logical exclusive or
+TEST - logical compare
+
+## Branching and Subroutines
+CALL - call a subroutine/function/procedure
+SYSCALL - call an OS function (Linux, Mac)
+ENTER - make stack from for procedure parameters
+LEAVE - high level procedure exit
+RET - return from subroutine
+CMP - compare two operaands
+JA - jump if result of unsigned compare is above
+JAE - jump if result of unsigned compare is above or equal
+JB - jump if result of unsigned compare is below
+JBE - jump if result of unsigned compare is below or equal
+JC - jump if carry flag is set
+JE - jump if equal
+JG - jump if greater than 
+JGE - jump if greater than or equal
+JNC - jump if carry not set
+JMP - go to / jmp (simply loads the RPC register with the address)
+
+## Bit manipulation
+BT - bit test (test a bit)
+BTC - bit test and complement
+BTR - bit test and reset
+BTS - bit test and set
+RCL - rotate 9 bits (carry flag, 8 bits in operand) left count bits
+RCR - rotate 9 bits (carry flag, 8 bits in operand) right count bits
+ROL - rotate 8 bits in operand left count bits
+ROR - rotate 8 bits in operand right count bits
+SAL - arithmetic shift operand left count bits
+SAR - arithmetic shift operand right count bits (maintains sign bit)
+SHL - logical shift operand left count bits (same as SAL)
+SHR - logical shift operand right count bits (does not maintain sign bit)
+
+## Register manipulation, Casting/Conversions
+MOV - move register to register, move register to memory, move memory to register
+XCHG - exchange register/memory with register
+CBW - convert byte to word
+CDQ - convert word to double word/convert double word to quad word
+
+## Flags manipulation
+CLC - clear carry flag/bit in flags register
+CLD - clear direction bit in flags register
+STC - set carry flag
+STD - set direction flag
+
+## Stack manipulation
+POP - pop a register off the stack
+POPF - pop stack into flags register
+PUSH - push a register on the stack
+PUSHF - push flags register on the stack
 
