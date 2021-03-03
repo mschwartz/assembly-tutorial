@@ -1,4 +1,4 @@
-; use the build.sh script to assemble and link this
+; use the build-macos.sh script to assemble and link this
 
 global start
 

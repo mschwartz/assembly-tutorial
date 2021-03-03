@@ -588,8 +588,9 @@ msg:    db      "Hello, world!", 10
 It works.  Here's the output:
 
 ```
-# ./build.sh
-# ./hello
+# ./build-mac.sh
+Run it via ./hello-macos
+# ./hello-macos
 Hello, World!
 #
 ```

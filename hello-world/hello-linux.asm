@@ -1,8 +1,8 @@
-; use the build.sh script to assemble and link this
-
-section .text
+; use the build-linux.sh script to assemble and link this
 
         global _start
+section .text
+
 _start:
     mov     rax, 1 ; write
     mov     rdi, 1 ; stdout
