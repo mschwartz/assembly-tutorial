@@ -573,9 +573,9 @@ Note that member may be 0 - in this case, rsi simply contains the address of the
 
 # Commonly Used Instructions
 
-```
 ## Aritmetic
 
+```
 ADC - add a value, plus 
 ADD - add two registers together
 DEC - decrement by 1
@@ -588,15 +588,19 @@ NEG - two's complement (multiply by -1)
 SBB - subtract with borrow (carry flag)
 SUB - subtract
 LEA - load effective address (formed by some expression / addressing mode) into register
+```
 
 ## Boolean Algebra
+```
 AND - logical AND to registers together
 NOT - one's complement (invert all the bits in the operand)
 OR - logical OR
 XOR - logical exclusive or
 TEST - logical compare
+```
 
 ## Branching and Subroutines
+```
 CALL - call a subroutine/function/procedure
 SYSCALL - call an OS function (Linux, Mac)
 ENTER - make stack from for procedure parameters
@@ -613,8 +617,10 @@ JG - jump if greater than
 JGE - jump if greater than or equal
 JNC - jump if carry not set
 JMP - go to / jmp (simply loads the RPC register with the address)
+```
 
 ## Bit manipulation
+```
 BT - bit test (test a bit)
 BTC - bit test and complement
 BTR - bit test and reset
@@ -627,20 +633,26 @@ SAL - arithmetic shift operand left count bits
 SAR - arithmetic shift operand right count bits (maintains sign bit)
 SHL - logical shift operand left count bits (same as SAL)
 SHR - logical shift operand right count bits (does not maintain sign bit)
+```
 
 ## Register manipulation, Casting/Conversions
+```
 MOV - move register to register, move register to memory, move memory to register
 XCHG - exchange register/memory with register
 CBW - convert byte to word
 CDQ - convert word to double word/convert double word to quad word
+```
 
 ## Flags manipulation
+```
 CLC - clear carry flag/bit in flags register
 CLD - clear direction bit in flags register
 STC - set carry flag
 STD - set direction flag
+```
 
 ## Stack manipulation
+```
 POP - pop a register off the stack
 POPF - pop stack into flags register
 PUSH - push a register on the stack
