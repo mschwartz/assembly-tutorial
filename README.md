@@ -205,7 +205,7 @@ You can shift a byte to the left (<< operator in C) 1-7 bits.  For example:
 
  001111101b  shifted left becomes
  ////////
-001111100b  (bit 0 becomes 0)
+x01111100b  (bit 0 becomes 0)
 ```
 Note that we have the overflow problem here, as we did with addition.  We have an upper bit that ends up in the "bit bucket" (thrown away).
 
@@ -213,7 +213,7 @@ A left shift of 1 bit is effectively a multply by 2.  Consider 001b<<1 is 010b, 
 
 Shifting to the right works similarly, but we now end up with the high bit being cleared and the low bit in the bit bucket. 
 
-A right shift of 1 bit is effectively a divide by 2. But this right shift will take a negative number and make it positive because the sign bit is cleared.  So we need a second kind of right shift for signed values that sets the high bit in the result to the high bit in the initial value.
+A right shift of 1 bit is effectively a divide by 2. But this right shift will take a negative number and make it positive because the sign bit is cleared.  So we need a second kind of right shift (arithmetic shift right) for signed values that sets the high bit in the result to the high bit in the initial value.
 
 A rotate left/right is the same as a shift, except instead of the lost bit ending up in the bit bucket, it becomes the new high/low bit.
 
@@ -237,6 +237,34 @@ When you AND with 00111b, you are clearing bit 3.
 Memory (RAM) can be viewed as an array of bytes.  If you have 1MB of RAM, your array is indexed from 0 to 1MB-1.  The index is better known as an address.
 
 Memory is used to store your program, for your program stack, for your program's heap (memory allocation) and to store your variables.  In a simple CPU and RAM setup, you might have your program start at index 0, your variables start at the end of the program, your heap starts at the end of your variables, and your stack starts at the top of memory and works its way downward as you push onto it.
+
+```
+HIGH memory address
++------------+
+|            |
+| stack      |
+| grows down |
+| address 1M |
+|            |
++------------+
+|            |
+| heap       |
+| grows up   |
+|            |
++------------+
+|            |
+| global     |
+| variables  |
+|            |
++------------+
+|            |
+| code       |
+| address 0  |
+|            |
++------------+
+LOW memory address
+_
+```
 
 The way words of the different sizes are stored in memory is determined by the "endianess" of the CPU.  A CPU that is big endian stores the high byte first in memory, the next highest byte next, ... and finally the lowest byte last.  A CPU that is little endian stores the low byte first, ... the high byte last.
 
