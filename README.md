@@ -272,6 +272,7 @@ HIGH memory address
 LOW memory address
 ```
 
+## ELF Files
 The compiler/assembler/linker generate ELF formatted files.  An ELF file is divided into various sections.  The more common sections are ```.text``` (code), ```.data``` initialized data, ```.rodata``` read only data (constants), ```.bss``` (uninitialized data), and assorted debugging info sections.
 
 The operating system program loader reads in the ELF file and allocates memory for the .text section and loads that data from the file into that memory.  
