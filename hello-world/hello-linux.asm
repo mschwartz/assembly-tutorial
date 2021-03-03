@@ -1,11 +1,9 @@
 ; use the build.sh script to assemble and link this
 
-global start
-
-
 section .text
 
-start:
+        global _start
+_start:
     mov     rax, 0x2000004 ; write
     mov     rdi, 1 ; stdout
     mov     rsi, msg
