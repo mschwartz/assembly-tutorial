@@ -573,6 +573,7 @@ Note that member may be 0 - in this case, rsi simply contains the address of the
 
 # Commonly Used Instructions
 
+```
 ## Aritmetic
 
 ADC - add a value, plus 
@@ -644,6 +645,7 @@ POP - pop a register off the stack
 POPF - pop stack into flags register
 PUSH - push a register on the stack
 PUSHF - push flags register on the stack
+```
 
 # Hello, World
 
