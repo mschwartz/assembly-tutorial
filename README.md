@@ -25,7 +25,7 @@ You wrote your program and variables on the cardboard and then step by step, fol
 
 These values are "opcodes" and the encoded instructions/steps include the opcode plus address, number of bits to shift, etc.
 
-THe CPU features only two registers:  accumulator and program counter.  More complex and modern CPUs have many more registers than these two.
+The CPU features only two registers:  accumulator and program counter.  More complex and modern CPUs have many more registers than these two.
 
 These instructions and registers are enough to learn from.  You learn about memory layout, instruction opcodes, instruction encoding, memory access, and so on.
 
@@ -59,13 +59,13 @@ When we talk about the value of the word, we typically use base 2, base 4, base 
 
 In base 2 (also called "binary""), we simply talk about the value as the bits.  That is, an unsigned byte might be 11111111, or 11101110, and so on.  We might add a lead 0 and terminating b for clarity (and this is the syntax used in assembly programming): 011111111b.
 
-Base 10 is the number base we use every day.  You count from 0 to 9 for each digit position in base 10.  When you add 1 to the value 9, you clear it (set to 0), and bump the 10s digit.  That is, 9+1 becomes 10.  As you go right to left in base 10, the digits are: n*10 to the power of 0, n*10 , or 10 to the power of 1, n*100, or 10 to the power of 2, and so on.
+Base 10 is the number base we use every day.  You count from 0 to 9 for each digit position in base 10.  When you add 1 to the value 9, you clear it (set to 0), and bump the 10s digit.  That is, 9+1 becomes 10.  As you go right to left in base 10, the digits are: n x 10 to the power of 0, n x 10 , or 10 to the power of 1, n x 100, or 10 to the power of 2, and so on.
 
-In base 2, we count from 0 to 1 for each digit position.  When you add 1 to a 1 in a position in the byte, you clear it and increment the next higher bit (and continue until you find an existing 0 in position, which becomes 1).  As you go right to left in base 2, the digits are n*2 to the power of 0, n*2, or 2 to the power of 1, n*4, or 2 to the power of 2, and so on.
+In base 2, we count from 0 to 1 for each digit position.  When you add 1 to a 1 in a position in the byte, you clear it and increment the next higher bit (and continue until you find an existing 0 in position, which becomes 1).  As you go right to left in base 2, the digits are n x 2 to the power of 0, n x 2, or 2 to the power of 1, n x 4, or 2 to the power of 2, and so on.
 
-In base 8 (also called "octal"), we count from 0-7 for each digit position.  Going right to left, n*8 to the power of 0, n*8 to the power of 1, n*8 to the power of 2, etc.
+In base 8 (also called "octal"), we count from 0-7 for each digit position.  Going right to left, n x 8 to the power of 0, n x 8 to the power of 1, n x 8 to the power of 2, etc.
 
-In base 16 (also called "hex"), we count from 0-15 for each digit position.  We use a counting system that is 1, 2, 3, 4, 5, 6, 7, 8, 9, A, B, C, D, E, F, then 10.  So going from right to left in a hex number, the digits are n*16 to the power of 0, n*16 to the power of 1, n*16 to the power of 2, and so on.
+In base 16 (also called "hex"), we count from 0-15 for each digit position.  We use a counting system that is 1, 2, 3, 4, 5, 6, 7, 8, 9, A, B, C, D, E, F, then 10.  So going from right to left in a hex number, the digits are n x 16 to the power of 0, n x 16 to the power of 1, n x 16 to the power of 2, and so on.
 
 A "nybble" is useful for working with hex.  A nybble is 4 bits.  It turns out that the value you can store in 4 bits is 0-15, perfect for hex.  You already get the pattern about power of 4s when using nybbles.
 
@@ -136,7 +136,7 @@ What happens when we add 1 to a byte size value of 255?  We only have 8 bits for
 
 All this extends to 32 bit and 64 bit words.
 
-Multiplication of two values requires a double-sized result, or you lose a lot more than just the 9th bit!  Consider 255 * 255 = 65025 (0xfe01), which fits in 16 bits but not in 8.  If we have a byte result, we get 0x01 due to the overflow, losing over 665000 in result value.
+Multiplication of two values requires a double-sized result, or you lose a lot more than just the 9th bit!  Consider 255 x 255 = 65025 (0xfe01), which fits in 16 bits but not in 8.  If we have a byte result, we get 0x01 due to the overflow, losing over 665000 in result value.
 
 ## Boolean Algebra
 
@@ -248,7 +248,7 @@ For our purposes, we're going to assume we're the only program running on the ma
 
 ## ALU
 
-The cost of having circuitry to add two arbitrary memory locations together is prohibitive.  You have 1M * 1M add circuits required, and that's just for addition!  
+The cost of having circuitry to add two arbitrary memory locations together is prohibitive.  You have 1M x 1M add circuits required, and that's just for addition!  
 
 The math (add) capability is, instead, implemented in the ALU (Arithmetic-Logic Unit) of the CPU.  The CPU provides some (small) number of general purpose "registers" and the ALU implements the add circuitry just between those registers.  
 
@@ -282,7 +282,7 @@ AMD64 and x64 add 8 more general purpose registers, R8, R9, R10, R11, R12, R13, 
 
 ### Special Purpose Registers
 
-THe RCX/RCX/CX (CX) register doubles as a counter for dedicated instructions.  The AMD64 instruction set includes instructions to fill, copy, and compare memory, and loops that use this register as the number of bytes/words/dwords/qwords to fill/copy/compare.  The special loop instructions use this register as the loop counter as well.
+The RCX/RCX/CX (CX) register doubles as a counter for dedicated instructions.  The AMD64 instruction set includes instructions to fill, copy, and compare memory, and loops that use this register as the number of bytes/words/dwords/qwords to fill/copy/compare.  The special loop instructions use this register as the loop counter as well.
 
 The RSI/ESI/SI and RDI/EDI/DI/ registers are general purpose "source" and "destination" registers for the fill, copy, and compare instructions.
 
@@ -471,7 +471,7 @@ This addressing mode is used to access array elements.  To illustrate how this m
 As you index the array, you have to "scale" the index before adding it to the base of the array.  The scale operating assures we are addressing byte, word, dword, or qword elements properly.  
 
 ```
-        mov member(rsi, rbx, 4), eax   ; store dword in eax at rsi+ member(offset) + rbx * 4
+        mov member(rsi, rbx, 4), eax   ; store dword in eax at rsi+ member(offset) + rbx x 4
 ```
 The above example stores a dword into memory.  We are accessing a struct member that is an array of dwords.  The rbx register contains the index into the array, [0 ... array.length-1].  The 4 is the scale factor, or size of the dword.  
 
