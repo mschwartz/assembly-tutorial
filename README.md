@@ -240,39 +240,102 @@ Memory is used to store your program, for your program stack, for your program's
 
 ```
 HIGH memory address
-+------------+
-|            |
-| stack      |
-| grows down |
-| address 1M |
-|            |
-+------------+
-|            |
-| heap       |
-| grows up   |
-|            |
-+------------+
-|            |
-| global     |
-| variables  |
-|            |
-+------------+
-|            |
-| code       |
-| address 0  |
-|            |
++--------------+
+|              |
+| stack        |
+| grows down   |
+| address 1M   |
+|              |
++--------------+
+|              |
+| heap         |
+| grows up     |
+|              |
++--------------+
+|              |
+| uninitalized |
+| global       |
+| variables    |
+|              |
++--------------+
+|              |
+| initalized   |
+| global       |
+| variables    |
+|              |
++--------------+
+|              |
+| code         |
+| address 0    |
+|              |
 +------------+
 LOW memory address
-_
 ```
 
+The compiler/assembler/linker generate ELF formatted files.  An ELF file is divided into various sections.  The more common sections are ```.text``` (code), ```.data``` initialized data, ```.rodata``` read only data (constants), ```.bss``` (uninitialized data), and assorted debugging info sections.
+
+The operating system program loader reads in the ELF file and allocates memory for the .text section and loads that data from the file into that memory.  
+
+Then the loader allocates memory for the initialized data (.data) and reads that data from the file into that memory.  
+
+Then the loader allocates memory for the constant data (.rodata) and reads that data from the file into that memory.  
+
+The loader allocates memory for the .bss section.  Since the .bss section is uninitialized, it only needs to be allocated.
+
+The linker reads in intermediate object files (```.o```) and links them together to make the final executable.  Each .o file may declare variables that might be accessed from other .o files and to access variables that are defined in some other .o file.  The linker fixes up the addresses in the final output so the code works as expected!
+
+### Permissions (Sections and Privileged Instructions)
+The compiler/assembler/linker generally makes the code execute only.  If you try to store to those addresses, you will get a segfault.  
+
+The .data and .bss sections are marked as read/write and the .rodata is marked as read-only.
+
 The way words of the different sizes are stored in memory is determined by the "endianess" of the CPU.  A CPU that is big endian stores the high byte first in memory, the next highest byte next, ... and finally the lowest byte last.  A CPU that is little endian stores the low byte first, ... the high byte last.
+
+The CPU has special features that enforce these permissions.  If you try to defeat the permissions, a segfault exception is thrown.  The operating system sets up these features when the program is started, and kills the program and potentially (generates a core dump file of the program.  The core dump file can be used later to do forensic debugging/analysis of the failure.
+
+### MMU
 
 In modern operating systems, the CPU uses an MMU (Memory Management Unit) to assign a subset of the system's memory to each program that you run.  The MMU maps an address in physical memory to a logical address that the program sees and uses.  This allows, for example, a CPU to split the 1MB of RAM into 2x 512K address spaces to run two programs.  The address translation makes it so each program thinks it has 512K of RAM starting at address 0 and ending at address 512K - 1.  
 
 The use of the MMU is much more clever than I just explained, but the end result is the same.  When a program is launched, it is allocated a small amount of RAM, enough for the program's code and variables and stack and a minimal heap.  As the program needs more stack or more heap, the OS adds physical memory to the program's address space using the MMU.  The program grows on demand.
 
-For our purposes, we're going to assume we're the only program running on the machine.  It matters not if there's an OS using the MMU or not, the programming effort and techniques are the same either way.
+For our purposes, we can assume we're the only program running on the machine.  It matters not if there's an OS using the MMU or not, the programming effort and techniques are the same either way.
+
+#### Paging and Swapping
+
+The operating system only needs to set up the MMU for enough physical memory for the program to execute.  Memory is allocated for the MMU in 4096 byte chunks (pages); this is required by the MMU implementation (hardware).
+
+This scheme is quite efficient, as a small assembly program might only need a couple of megabytes of RAM (2MB for stack is default in the OS!), and your computer might have 16 Gigabytes of RAM.  This efficient allocation of the CPU's memory allows you to load and run many programs at the same time.
+
+When your program tries to access an address in memory that isn't mapped by the OS using the MMU, a page fault exception is raised.  The OS sees this and might map in an additional page so that the access can succeed.  
+
+If the system is out of memory, the OS might compress programs and/or their data to make more RAM available.  The OS has to decompress this memory when it's those programs' turn to execute, though.  MacOS does this compression, and it's very clever.
+
+Another thing the OS can do when there is an out of memory (OOM)) condition is to "page" one or more 4096 byte pages from memory to the system's swap file/partition.  This frees up enough pages to use to handle the page fault.  When a program that has memory paged to disk is scheduled to run (use the CPU), the code might cause further page faults to read back in the paged memory.  It's possible the program never accesses that memory, and that's perfectly fine.
+
+Yet another thing the OS can do is to swap out entire programs (and their data) to the swap file/partition.  When those programs get to run, they have to be entirely read back into memory (and MMU set up), and perhaps swapping another program to disk.  When the system is tight on free memory and is swapping heavily, it will become very unresponsive!
+
+Finally, if the OS cannot resolve the OOM condition with one of those (or potentially other clever) strategies, it just randomly kills a running program.  This seems evil, but what else can it do?
+
+The stack grows down from high memory. If the stack overflows (grows below the memory allocated for it), a page fault occurs and the OS can add additional pages to the memmory map so the stack has more room.
+
+The heap initially has a small but reasonable amount of RAM allocated.  It can be expanded using the ```sbrk``` syscall.  This is what the malloc() function does in C, though the sbrk() function can be called directly if you know what you're doing.
+
+### Other exceptions
+
+#### Segfault
+It should be noted that a program might just randomly access some address that is truly outside the bounds of the program's memory map.  Paging or swapping is not performed in this case.  The MMU is set up so these addresses are simply not mapped into the program's memory map.  Instead of raising a page fault exception, the CPU/MMU raises a segfault exception.  
+
+This is a hard program crash, and the operating system will terminate the program.
+
+#### Divide By Zero
+If your program attempts to divide by zero, this exception is raised and the program is terminated.
+
+#### Invalid Opcode
+If your program somehow executes instructions that are not valid x64/amd64 instructions, this exception is raise and the program is terminated.  This will occur, for example, if you push a random number on the stack and then return.  Your program starts executing at that random address and who knows what data are there?  If the random number/return causes the program to execute outside its address space, you get a Segfault instead.
+
+#### General Protection 
+If your program attempts to execute a privileged instruction, this exception is raised and the program is terminated.  There are quite a few privileged instructions, such as CLI/STI (disable/enable interrupts).  An OS should not allow programs to disable interrupts, or your multitasking stops working!
 
 ## ALU
 
