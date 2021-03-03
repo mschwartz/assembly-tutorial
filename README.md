@@ -560,7 +560,7 @@ PUSHF - push flags register on the stack
 See hello-world/ directory for a build script and this assembly source.
 
 ```
-; Use the build.sh
+; Use the build-macos.sh script to assemble and link this.
 
 global start
 
@@ -595,12 +595,62 @@ Hello, World!
 #
 ```
 
+## Linux version
+
+Linux has different (from MacOS) syscall numbers passed in rax.  The entry point for Linux programs is "_start"" vs "start" on MacOS.
+
+Otherwise, the program is the same.
+
+```
+; use the build-linux.sh script to assemble and link this
+
+        global _start
+section .text
+
+_start:
+    mov     rax, 1 ; write
+    mov     rdi, 1 ; stdout
+    mov     rsi, msg
+    mov     rdx, msg.len
+    syscall
+
+    mov     rax, 60 ; exit
+    mov     rdi, 0
+    syscall
+
+
+section .data
+
+msg:    db      "Hello, world!", 10
+.len:   equ     $ - msg
+```
+
+```
+# ./build-linux.sh
+Run it via ./hello-linux
+i# ./hello-linux
+Hello, world!
+#
+```
+
 ## How it works
 
-MacOS provides quite a few syscalls, or operating system calls that we can call from any language.  The C libraries contain code similar to our code above, to write strings to a file.  For our purposes we use the file number for stdout to write to he console.
+MacOS and Linux provide quite a few syscalls each, or operating system calls that we can call from any language.  There are quite a few syscalls in common between the two, but they are different flavors of Unix (linux vs. BSD-ish/MacOS).  The two flavors have several syscalls that are provided in one OS but not the other.  The syscall numbers (passed in rax) are also different between the operating systems.
+
+The C libraries contain code similar to our code above, to write strings to a file.  For our purposes we use the file number for stdout to write to he console.
 
 For most C calls that are not provided by a library or the standard C/C++ libraries, there is a syscall.  For example, malloc and free are provided by libc so there is no syscall for it.  However, sbrk() is not provided by the libraries and is provided as a syscall.
 
 The syscalls take arguments in the CPU registers.  RAX contains the syscall number (one for write, one for exit in the above).
 
+### Linux Syscalls
 
+Linux syscalls are documented here:
+    https://chromium.googlesource.com/chromiumos/docs/+/master/constants/syscalls.md
+The syscalls for Linux are defined in:
+    /usr/include/sys/syscall.h
+
+### MacOS Syscalls
+
+The syscalls for MacOS are defined in:
+    ./Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/sys/syscall.h
