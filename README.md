@@ -122,7 +122,7 @@ See the -rw-r--r-- ?  What we have here is 9 bits in octal.  rw- is 110, r-- is 
 ```
 chmod 644 README.md
 ```
-The three bits, technically, are "able to read", "able to write", and "able to execute."  The first octal value is for the owner, the second is for anyone in the same user group as the owner, and the third is for everyone else.  So to allow the owner and group to read and write, but nobody else can read or write the file, we want rw-rw---- or 660.
+The three bits, technically, are "able to read", "able to write", and "able to execute."  The first octal value is for the owner, the second is for anyone in the same user group as the owner, and the third is for everyone else.  So to allow the owner and group to read and write, but nobody else can read or write the file, we want rw-rw---- or 660.  To set a file to be executable, I typically use ```chmod 755```.
 
 ## Math
 
