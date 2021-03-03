@@ -479,54 +479,6 @@ Note that member may be 0 - in this case, rsi simply contains the address of the
 
 
 
-# Hello, World
-
-See hello-world/ directory for a build script and this assembly source.
-
-```
-; Use the build.sh
-
-global start
-
-
-section .text
-
-start:
-    mov     rax, 0x2000004 ; write
-    mov     rdi, 1 ; stdout
-    mov     rsi, msg
-    mov     rdx, msg.len
-    syscall
-
-    mov     rax, 0x2000001 ; exit
-    mov     rdi, 0
-    syscall
-
-
-section .data
-
-msg:    db      "Hello, world!", 10
-.len:   equ     $ - msg
-```
-
-It works.  Here's the output:
-
-```
-# ./build.sh
-# ./hello
-Hello, World!
-#
-```
-
-## How it works
-
-MacOS provides quite a few syscalls, or operating system calls that we can call from any language.  The C libraries contain code similar to our code above, to write strings to a file.  For our purposes we use the file number for stdout to write to he console.
-
-For most C calls that are not provided by a library or the standard C/C++ libraries, there is a syscall.  For example, malloc and free are provided by libc so there is no syscall for it.  However, sbrk() is not provided by the libraries and is provided as a syscall.
-
-The syscalls take arguments in the CPU registers.  RAX contains the syscall number (one for write, one for exit in the above).
-
-
 # Commonly Used Instructions
 
 ## Aritmetic
@@ -600,4 +552,54 @@ POP - pop a register off the stack
 POPF - pop stack into flags register
 PUSH - push a register on the stack
 PUSHF - push flags register on the stack
+
+# Hello, World
+
+## MacOS Version
+
+See hello-world/ directory for a build script and this assembly source.
+
+```
+; Use the build.sh
+
+global start
+
+
+section .text
+
+start:
+    mov     rax, 0x2000004 ; write
+    mov     rdi, 1 ; stdout
+    mov     rsi, msg
+    mov     rdx, msg.len
+    syscall
+
+    mov     rax, 0x2000001 ; exit
+    mov     rdi, 0
+    syscall
+
+
+section .data
+
+msg:    db      "Hello, world!", 10
+.len:   equ     $ - msg
+```
+
+It works.  Here's the output:
+
+```
+# ./build.sh
+# ./hello
+Hello, World!
+#
+```
+
+## How it works
+
+MacOS provides quite a few syscalls, or operating system calls that we can call from any language.  The C libraries contain code similar to our code above, to write strings to a file.  For our purposes we use the file number for stdout to write to he console.
+
+For most C calls that are not provided by a library or the standard C/C++ libraries, there is a syscall.  For example, malloc and free are provided by libc so there is no syscall for it.  However, sbrk() is not provided by the libraries and is provided as a syscall.
+
+The syscalls take arguments in the CPU registers.  RAX contains the syscall number (one for write, one for exit in the above).
+
 
