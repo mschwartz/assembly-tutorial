@@ -37,7 +37,7 @@ These instructions and registers are enough to learn from.  You learn about memo
 
 In this tutorial, I will cover the basics of programming the x64/AMD64 CPU in assembly language.  As I progress, you will see how the CPU is really a glorified version of CARDIAC!
 
-## Bits, Bytes, Words, and Nuamber Bases
+## Bits, Bytes, Words, and Number Bases
 
 The smallest piece of information that a CPU processes is a "bit."  A bit is a small integer or boolean type value, either 0 (off/false) or 1 (on/true).
 
