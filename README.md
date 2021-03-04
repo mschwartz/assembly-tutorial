@@ -468,7 +468,7 @@ This mode uses a register as the address of a memory location to be operated on 
 
 This mode uses a register as the base address of a memory location, added to a fixed offset, to determine the address of a memory location to be operated on.  For example,
 ```
-        mov rax, 24(rbx)  ; access memory at 24 + contents of rbx
+        mov rax, [rbx+24]  ; access memory at 24 + contents of rbx
 ```
 The purpose of this addressing mode is to facilitate accessing a structure and its members.  Consider:
 ```
@@ -619,7 +619,7 @@ JNC - jump if carry not set
 JMP - go to / jmp (simply loads the RPC register with the address)
 ```
 
-## Bit manipulation
+## Bit Manipulation
 ```
 BT - bit test (test a bit)
 BTC - bit test and complement
@@ -635,7 +635,7 @@ SHL - logical shift operand left count bits (same as SAL)
 SHR - logical shift operand right count bits (does not maintain sign bit)
 ```
 
-## Register manipulation, Casting/Conversions
+## Register Manipulation, Casting/Conversions
 ```
 MOV - move register to register, move register to memory, move memory to register
 XCHG - exchange register/memory with register
@@ -643,7 +643,7 @@ CBW - convert byte to word
 CDQ - convert word to double word/convert double word to quad word
 ```
 
-## Flags manipulation
+## Flags Manipulation
 ```
 CLC - clear carry flag/bit in flags register
 CLD - clear direction bit in flags register
@@ -651,13 +651,360 @@ STC - set carry flag
 STD - set direction flag
 ```
 
-## Stack manipulation
+## Stack Manipulation
 ```
 POP - pop a register off the stack
 POPF - pop stack into flags register
 PUSH - push a register on the stack
 PUSHF - push flags register on the stack
 ```
+
+# Assembler Source, Directives,  and Macros
+The assembler is a program that reads assembly source code and generates a binary output file or ELF .o file.  The assembler reads a line at a time and writes the encoded program instructions for that line to the output file.  
+
+NASM is a great free assembler, LLVM Assembler (as), and Gnu Assembler/as/gas (part of the gcc package) are two assemblers that are used for Linux and MacOS assembly development/programming.  For all intents and purposes, LLVM and Gnu assemblers are identical.  There are other assemblers out there, but they are beyond the scope of this tutorial.
+
+
+There are two styles of assembly source for x64: Intel and AT&T. 
+
+* Intel syntax expects operands to be specified as ```destination, source```.
+* AT&T syntax expects operands to be specified as ```source, destination```.  
+
+The NASM assembler uses Intel sysntax and the GNU/LLVM assemblers can use either Intel or AT&T; you choose which using an assembler directive.  
+
+## Assembler Directives
+An assembler directive is not machine instructions.  Instead, these are used to convey information to the assembler to effect code generation as you prefer.  Assembler directives are specific to the assembler you are using and the source code using these is not portable between assemblers.  The nature of (order of) Intel and AT&T syntax makes code written for one not portable to an assembler using the other.
+
+The gas (gnu/llvm) assembler uses the .intel_syntax directive to tell the assembler that the source format of the file is Intel syntax.  Otherwise AT&T syntax is assumed.
+
+I'm not going to expand on all the directives for gas and NASM.  There are basically similar directives for both assemblers.  I prefer using NASM, though there is no reason you can't use gas - whichever you prefer.  I'll document the common NASM directives here.
+
+### section type [options]
+The section directive specifies that the following instructions/directives apply to the specified section.  Examples:
+```
+section .text
+section .bss execute
+section .rodata
+```
+These types were defined earlier in this document.  The execute option marks this bit of .bss as read/write and execute permissions.
+
+### bits 16, bits 32, and bits 64, use16, use32, use64
+These directives tell the assembler to generate instructions for the CPU running in the specified mode.  
+
+When the system first boots, the CPU is in 16 bit mode.  The instructions it executes at that point must be ```bits 16``` or ```use16```.  You probably won't be writing code for 16 bit mode.
+
+A 32-bit operating system sets the CPU into 32 bit mode.  The instructions it executes at that point must be ```bits 32``` or ```use32```.
+
+This document assumes 64-bit mode, so we use ```bits 64```.  In 64-bit mode, the assembler can generate either 64-bit or 32-bit instructions, whichever is appropriate.
+
+### Comments
+
+In a NASM source program, the semicolon (;) character introduces the start of a comment.  All characters from that point on, to the end of the line, are ignored.
+
+Note that gas supports a couple of comment styles, including ```/* */``` C-style multiline comments, or pound sign ```#``` to instroduce the start of a comment.
+
+### Constants
+NASM supports constants of the form:
+```
+0x10 ; base 16
+010h ; base 16
+011100b ; base 2
+```
+
+
+### Program Variables and Strings
+Programming is uselss if you can't create variables and create and operate on strings.  The assemmbler provides directives to reserve space for variables or to define initialized memory. 
+
+Resserving space examples:
+```
+    resb 1  ; reserve 1 byte
+	resw 1  ; reserve 1 word (2 bytes)
+	resd 1  ; reserve 1 dword (4 bytes)
+	resq 1  ; reserve 1 qword (8 bytes)
+	resb 16 ; reserve 16 bytes
+	...
+```
+
+Initializing memory examples:
+```
+     db 10  ; reserve 1 byte with the value 10 at the memory location
+     dw 11  ; reserve 1 word with the value 11 at the memory location
+     dd 10  ; reserve 1 dword with the value 10 at the memory location
+     dq 10  ; reserve 1 qword with the value 10 at the memory location
+	 db 10, 11, 12 ; reserve 3 bytes with values 10, 11, and 12
+	 ...
+```
+
+You can use the memory initializer directives for strings:
+```
+     ; create a null terminated string
+     db 'now is the time for all good men to come to the aid of their country!', 0
+	 ; create a null terminated string with carriage return/linefeed at the end
+     db 'now is the time for all good men to come to the aid of their country!', 13, 10, 0
+```
+
+### Assembler Variables and Labels
+A label is a type of variable, and is the first thing on a line of source code.  The value of the label is the current program counter as viewed by the assembler and when the program is actually running.  You typically use a label to define a variable to access from assembly code or the address for jumps or subroutines.
+
+
+```
+			section .text
+			...
+; find length of message
+			mov rsi, message    ; load address of message into rsi
+			xor rcx, rcx        ; fast way to set rcx to 0
+loop:
+            mov al, [rsi]       ; get character from string
+			inc rsi             ; point to next character
+			inc rcx             ; increment length counter
+			test al, al
+			jne loop
+; rcx has the length of the string 
+            ...
+
+			section .rodata
+message:    db 'hello, world!', 13, 10, 0 ; you can access message in an instruction:
+```
+
+A Variable is a string of text that refer to any numeric value you like, with a few exceptions. A common use is to define constants/expressions, as you would use ```#define``` in "C".  You use the EQU directive to specify the variable's value.    
+
+Examples:
+```
+ANSWER  equ 42
+CR      equ 13
+NEWLINE equ 10
+STDIN   equ 0
+STDOUT  equ 1
+STDERR  equ 2
+```
+
+The ```$```  character can be used in these expressions, too.  It represents the current value of the program counter as the assembler sees it.
+
+```
+			section .text
+			mov rax, message ; load address of message into rax
+			move rcx, message_len
+
+			section .rodata
+message:    db 'hello, world!', 13, 10 ; you can access message in an instruction:
+message_len equ $ - message ; length of message string in bytes
+```
+
+You can also use the ```%assign``` directive to create and update a variable.  If you try to use EQU twice on the same variable name, it is an error.  
+
+```
+%assign count 0
+%assign count count+1
+```
+
+There is a directive to assign a string to a variable, too.  This is similar to the "C" ```#define``` preprocessor directive; the string is substituted in the source code when the variable is encountered.
+
+```
+%define hello 'hello, world!', 13, 10
+			section .text
+			mov rax, message ; load address of message into rax
+			move rcx, message_len
+
+			section .rodata
+message:    db hello
+message_len equ $ - message ; length of message string in bytes
+```
+
+You can undefine one of these variables created with ```%define``` using ```%undef```.
+
+You can use local labels so you don't have to keep track of every label/variable you have defined to avoid collisions.  A local label begins with a period.  Its scope is valid only between two true labels.
+
+```
+; subroutines to return address of string in RSI
+get_string1:
+            mov rsi, .string
+			ret
+.string:    db 'string1'
+
+get_string2:
+            mov rsi, .string
+			ret
+.string:    db 'string2'
+```
+
+Creating a variable or label does not generate any code!
+
+### Repetion
+The ```times``` directive is used to repeat an initialization:
+
+```
+        section .data
+stars:  times 32 db '*' ; creates 32 bytes containing * at memory location "stars".
+```
+
+### Macros
+A macro is similar to a subroutine, but is substituted inline and has powerful text processing/substitution factilities.
+
+A macro is defined using the ```%macro``` and ```%endmacro``` directives.  Everything between these two directives is the content of the macro, or the text to be substituted.  The ```%macro``` directive requires the number of parameters to the macro.
+
+```
+; two handy macros that save me a lot of typing.
+%macro pushg 0
+    push rax
+	push rbx
+	push rcx
+	push rdx
+%endmacro
+
+; note these have to be popped in the reverse order they are pushed!
+%macro popg 0
+    pop rdx
+	pop rcx
+	pop rbx
+	pop rax
+%endmacro
+
+    ...
+	; short and convenient
+	pushg
+	; use registers rax, rbx, rcx, rdx
+	popg
+```
+
+If you want to pass arguments to your macro, you specify a non-zero number on the ```%macro``` directive.  Within the macro body, you can access the parameters using ```%1```, ```%2``` and so on.  Here's a macro definition that demonstrates some of the power of macros.
+
+```
+%macro print 1
+    mov rsi, .message
+	call print_message
+	jmp .over
+.message: db '%1', 0
+.over:
+%endmacro
+
+   ...
+   print "hello, world!"
+   
+```
+
+The problem with our print macro is that it generates .message and .over local labels and you might use the macro more than once between real labels:
+
+```
+   print "hello, world!"
+   print "goodbye cruel world!"
+```
+
+What happens is we have duplicate local labels and the compiler generates an error.  Local labels are incredibly useful in macros, so there has to be a way, and there is.   Local labels within macros are defined using the form ```%%label```.  The assembler generates a uniqe label name when expanding the macro.  This is the working print macro:
+
+```
+%macro print 1
+    mov rsi, %%message
+	call print_message
+	jmp %%over
+%%message: db '%1', 0
+    align 8
+%%over:
+%endmacro
+```
+
+### Conditional Assembly
+NASM provides ```%if```, ```%elif```, ```%else```, and ```%endif``` directives that allow for conditional assembly.  
+
+```
+; a totally contrived useless example, for illustrative purposes
+%assign foo 1
+%if foo=1
+   mov rax, 32
+%else
+   mov rax, 42
+%endif
+```
+
+
+NASM also provides ```%ifdef``` directive that works with ```%elif``` and the other conditional assembly directives.  Instead of testing a condition as ```%if``` does, it tests the existance 
+
+```
+; comment out the undef to enable the LINUX "do things" code
+%define LINUX
+%undef LINUX
+%ifdef LINUX
+; do linux things
+%endif
+%else
+; do mac things
+%endif
+```
+
+NASM provides the ```%ifidn``` directive that works with ```%elif``` and the other conditional assembly directives. NASM provides default defined variables that you can use to conditionally assemble using ```%ifidn```.  A particularly useful one is __?OUTPUT_FORMMAT?__ which you can test to determine whether to generate code for Linux or MacOS (or other):
+
+```
+%ifidn __?OUTPUT_FORMAT__, maco64
+  ; do macos stuff
+%else
+  ; do linux stuff
+%endif
+```
+
+### Alignment
+As you are writing your code, you may want instructions or data aligned on a word, dword, qword, or other size boundaries.  Typical uses are to align code on word/dword/qword boundaries.  You get a performance boost by having the target of a branching instruction such as jmp, call, and so on.
+
+```
+    align 8 ; align next code/data generated at next 8 byte boundary/address
+	align 16 ; align next code/data at next 16 byte boundary
+	
+	db 'hello'
+	align 8
+my_code_is_aligned:
+```
+Alignment is also useful for data structure definitions so your assembly structs can match up with ones defined in C.
+
+### Structures
+You can define high-level like structures using the ```%struc``` and ```%endstruc``` directives.  The ```%struc``` directive takes one parameter, the name of the structure.  The structure members are defined using the resb/resd/resw/resq space allocation directives.  The align directives are used to align structure members on the desired boundaries.
+
+```
+%struc Contact
+.company: resb 1 ; true for company, false for individual
+   align 2
+.company_id: resd 1 ; identifier
+.name: resb 64 ; max 64 characters for name
+.address: resb 64 ; also 64 for address
+.phone: resb 16 ; 16 characters for phone number
+%endstruc
+```
+
+Using a structure is straightforward:
+
+```
+   mov rsi, [person] ; fetch address of Contact struct into RSI
+   mov al, [rsi+Contact.company]
+   test al,al
+   jne .company
+   ; is an individual
+   print "Person"
+   push rsi
+   mov rsi, [rsi+Contact.name]
+   call printit
+   pop rsi
+   ...
+.company:
+   ; is a company
+   print "Company"
+   push rsi
+   mov rsi, [rsi+Contact.name]
+   call printit
+   pop rsi
+   ...
+```
+
+You use the ```%istruc``` and ```%iend``` directives to declare instances of structures.
+
+```
+a_company: istruc Contact
+  at .company, db 1
+  at .company_id, dd 100
+  at .name, db 'Engulf and Devour Corp', 0
+  at .address, db '1 Main Street, Anytown USA', 0
+  at .phone, db '1-800-devour!', 0
+%iend
+```
+
+
+See: https://nasm.us/xdoc/2.15.03rc8/html/nasmdoc5.html for all the predefined variables.
 
 # Hello, World
 
@@ -668,24 +1015,24 @@ See hello-world/ directory for a build script and this assembly source.
 ```
 ; Use the build-macos.sh script to assemble and link this.
 
-global start
+        bits 64
 
+		section .text
 
-section .text
-
+		global start
 start:
-    mov     rax, 0x2000004 ; write
-    mov     rdi, 1 ; stdout
-    mov     rsi, msg
-    mov     rdx, msg.len
-    syscall
+		mov     rax, 0x2000004 ; write
+		mov     rdi, 1 ; stdout
+		mov     rsi, msg
+		mov     rdx, msg.len
+		syscall
 
-    mov     rax, 0x2000001 ; exit
-    mov     rdi, 0
-    syscall
+		mov     rax, 0x2000001 ; exit
+		mov     rdi, 0
+		syscall
 
 
-section .data
+		section .data
 
 msg:    db      "Hello, world!", 10
 .len:   equ     $ - msg
@@ -709,23 +1056,24 @@ Otherwise, the program is the same.
 
 ```
 ; use the build-linux.sh script to assemble and link this
+        bits 64
+
+		section .text
 
         global _start
-section .text
-
 _start:
-    mov     rax, 1 ; write
-    mov     rdi, 1 ; stdout
-    mov     rsi, msg
-    mov     rdx, msg.len
-    syscall
+		mov     rax, 1 ; write
+		mov     rdi, 1 ; stdout
+		mov     rsi, msg
+		mov     rdx, msg.len
+		syscall
 
-    mov     rax, 60 ; exit
-    mov     rdi, 0
-    syscall
+		mov     rax, 60 ; exit
+		mov     rdi, 0
+		syscall
 
 
-section .data
+		section .data
 
 msg:    db      "Hello, world!", 10
 .len:   equ     $ - msg
@@ -760,3 +1108,9 @@ The syscalls for Linux are defined in:
 
 The syscalls for MacOS are defined in:
     ./Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/sys/syscall.h
+These syscall numbers are subject to change, so you should, at least, use the defines in your syscall.h and realize that when you update your OS, you need to verify the numbers haven't changed.  
+
+Alternatively, you can programatically scan the syscall.h file and generate assembly EQU for each syscall and always have the correct syscall numbers in your program.
+
+If the parameters to the OS syscalls somehow change, your program will crash.  It's not likely every syscall is going to have these changes, but you will need to fix your code when this does happen.
+
