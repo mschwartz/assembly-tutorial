@@ -1,6 +1,10 @@
 # Programming in assembly language tutorial
 
-This tutorial is aimed at novices and beginners who want to learn the first thing about assembly language programming.  If you are an expert, you may or may not get a lot out of this.  Enjoy!
+This tutorial covers AMD64/Intel 64 bit programming.  Instruction sets for other processors, such as ARM or RISC-V are radically different, though the concepts are the same.  They all have instructions, registers, stacks, and so on.  Once you know one processor's assembly language, adapting to a different processor is rather easy.  
+
+I found that I was writing code for a new processor within hours, and writing quality code within a week or two.  This is going from Z80 to 6502 to 6809 to 8086 to 68000 and so on.  It is interesting to be able to look at a processor's technical manuals and evaluate the power and flexibility of its instruction set.
+
+This tutorial is aimed at novices and beginners who want to learn the first thing about assembly language programming.  If you are an expert, you may or may not get a lot out of this.  
 
 ## Introduction
 
