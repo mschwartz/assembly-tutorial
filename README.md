@@ -954,6 +954,9 @@ NASM provides the ```%ifidn``` directive that works with ```%elif``` and the oth
 %endif
 ```
 
+See: https://nasm.us/xdoc/2.15.03rc8/html/nasmdoc5.html for all the predefined variables.
+
+
 ### Alignment
 As you are writing your code, you may want instructions or data aligned on a word, dword, qword, or other size boundaries.  Typical uses are to align code on word/dword/qword boundaries.  You get a performance boost by having the target of a branching instruction such as jmp, call, and so on.
 
@@ -1034,8 +1037,6 @@ my_gif:
    %incbin '/path/to/my/picture.gif'
 my_gif_size equ $-my_gif
 ```
-
-See: https://nasm.us/xdoc/2.15.03rc8/html/nasmdoc5.html for all the predefined variables.
 
 # Hello, World
 
