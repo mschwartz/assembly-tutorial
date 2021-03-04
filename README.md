@@ -1,5 +1,7 @@
 # Programming in assembly language tutorial
 
+This tutorial is aimed at novices and beginners who want to learn the first thing about assembly language programming.  If you are an expert, you may or may not get a lot out of this.  Enjoy!
+
 ## Introduction
 
 How CPUs work has become something of a lost art.  There are a small percentage of software engineers that need to understand the inner workings of CPUs, typically those who work on embedded software or operating systems, or compilers or JIT compilers...
@@ -679,6 +681,8 @@ The gas (gnu/llvm) assembler uses the .intel_syntax directive to tell the assemb
 
 I'm not going to expand on all the directives for gas and NASM.  There are basically similar directives for both assemblers.  I prefer using NASM, though there is no reason you can't use gas - whichever you prefer.  I'll document the common NASM directives here.
 
+There are a lot of directives; I'm not covering all of them. For expanded information, see the NASM manual online at https://nasm.us.  Hopefully, you find what is covered here to be enough to get you going.
+
 ### section type [options]
 The section directive specifies that the following instructions/directives apply to the specified section.  Examples:
 ```
@@ -710,7 +714,6 @@ NASM supports constants of the form:
 010h ; base 16
 011100b ; base 2
 ```
-
 
 ### Program Variables and Strings
 Programming is uselss if you can't create variables and create and operate on strings.  The assemmbler provides directives to reserve space for variables or to define initialized memory. 
@@ -746,12 +749,20 @@ You can use the memory initializer directives for strings:
 ### Assembler Variables and Labels
 A label is a type of variable, and is the first thing on a line of source code.  The value of the label is the current program counter as viewed by the assembler and when the program is actually running.  You typically use a label to define a variable to access from assembly code or the address for jumps or subroutines.
 
-
+You use the ```global``` directive to make a label's scope visible to other .o files at link time.  If you want to reference a label defined in a different .o file, you use the ```extern``` directive.
 ```
 			section .text
 			...
 ; find length of message
 			mov rsi, message    ; load address of message into rsi
+			call length
+			; print rcx, it has the length of the string
+			...
+			mov rsi, external_message
+			call length
+			; print rcx, it has the length of the string
+			...
+length:			
 			xor rcx, rcx        ; fast way to set rcx to 0
 loop:
             mov al, [rsi]       ; get character from string
@@ -759,10 +770,12 @@ loop:
 			inc rcx             ; increment length counter
 			test al, al
 			jne loop
-; rcx has the length of the string 
+			; rcx has the length of the string 
+			ret
             ...
 
 			section .rodata
+			global message
 message:    db 'hello, world!', 13, 10, 0 ; you can access message in an instruction:
 ```
 
@@ -915,7 +928,6 @@ NASM provides ```%if```, ```%elif```, ```%else```, and ```%endif``` directives t
 %endif
 ```
 
-
 NASM also provides ```%ifdef``` directive that works with ```%elif``` and the other conditional assembly directives.  Instead of testing a condition as ```%if``` does, it tests the existance 
 
 ```
@@ -951,6 +963,7 @@ As you are writing your code, you may want instructions or data aligned on a wor
 	align 8
 my_code_is_aligned:
 ```
+
 Alignment is also useful for data structure definitions so your assembly structs can match up with ones defined in C.
 
 ### Structures
@@ -1003,6 +1016,22 @@ a_company: istruc Contact
 %iend
 ```
 
+### Includes
+NASM provides two commonly used include directives: 
+```
+    %include "path/to/file"
+    %incbin"path/to/file"
+```
+
+The ```%include``` directive works like the "C" ```#include``` directive - it simply reads the specified file in place and assembles it as if it were part of the current file.  You can arbitrarily nest these includes, like you do in "C".
+
+The ```%incbin``` directive includes a raw binary, verbatim, in the output file at the current position.  You can use it, for example, to include a .gif file in your code:
+
+```
+my_gif:
+   %incbin '/path/to/my/picture.gif'
+my_gif_size equ $-my_gif
+```
 
 See: https://nasm.us/xdoc/2.15.03rc8/html/nasmdoc5.html for all the predefined variables.
 
