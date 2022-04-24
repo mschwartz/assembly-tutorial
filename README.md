@@ -10,7 +10,7 @@ This tutorial is aimed at novices and beginners who want to learn the first thin
 
 How CPUs work has become something of a lost art.  There are a small percentage of software engineers that need to understand the inner workings of CPUs, typically those who work on embedded software or operating systems, or compilers or JIT compilers...
 
-Assembly language was one of the first languages I ever learned.  Back in the early/mid 1970s, my high school classes progressed from BASIC to FORTRAN IV, to BAL (Basic Assembly Language) for the IBM 360 to which we had access.  One of the earliest lessons we were taught used a cardboard teaching aid, CARDIAC.  CARDIAC stands for "CARDboard Illiustrative Aid to Computation"; it wwas developed at Bell Labs, which was a big deal back then (Unix was invented there, as well as the C programming language).
+Assembly language was one of the first languages I ever learned.  Back in the early/mid 1970s, my high school classes progressed from BASIC to FORTRAN IV, to BAL (Basic Assembly Language) for the IBM 360 to which we had access.  One of the earliest lessons we were taught used a cardboard teaching aid, CARDIAC.  CARDIAC stands for "CARDboard Illiustrative Aid to Computation"; it was developed at Bell Labs, which was a big deal back then (Unix was invented there, as well as the C programming language).
 
 See https://www.cs.drexel.edu/~bls96/museum/cardiac.html.
 
