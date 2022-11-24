@@ -166,7 +166,7 @@ OR (if either operand is true, the result is true)
 XOR (if only one operand is true, the result is true)
 0 ^ 0 = 0
 0 ^ 1 = 1
-1 ^ 1 = 1
+1 ^ 0 = 1
 1 ^ 1 = 0
 ```
 
