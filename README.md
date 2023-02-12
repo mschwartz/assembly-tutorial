@@ -6,6 +6,67 @@ I found that I was writing code for a new processor within hours, and writing qu
 
 This tutorial is aimed at novices and beginners who want to learn the first thing about assembly language programming.  If you are an expert, you may or may not get a lot out of this.  
 
+- [Programming in assembly language tutorial](#programming-in-assembly-language-tutorial)
+    - [Introduction](#introduction)
+    - [Bits, Bytes, Words, and Number Bases](#bits-bytes-words-and-number-bases)
+    - [Math](#math)
+    - [Boolean Algebra](#boolean-algebra)
+    - [Bit Shifting](#bit-shifting)
+    - [Memory](#memory)
+    - [ELF Files and the Loader](#elf-files-and-the-loader)
+    - [Permissions](#permissions-sections-and-privileged-instructions)
+    - [MMU](#mmu)
+        - [Paging and Swapping](#paging-and-swapping)
+    - [Other exceptions](#other-exceptions)
+        - [Segfault](#segfault)
+        - [Divide By Zero](#divide-by-zero)
+        - [Invalid Opcode](#invalid-opcode)
+        - [General Protection](#general-protection)
+    - [ALU](#alu)
+    - [x64/AMD64 Registers](#x64amd64-registers)
+        - [General Purpose Registers](#general-purpose-registers)
+        - [Special Purpose Registers](#special-purpose-registers)
+        - [CPU Control Registers](#cpu-control-registers)
+            - [Stack](#stack)
+            - [Instruction Pointer](#instruction-pointer)
+            - [Flags](#flags)
+- [AMD64 Instruction Set](#amd64-instruction-set)
+    - [Assembly source](#assembly-source)
+    - [Addressing Modes](#addressing-modes)
+        - [Register Operands](#register-operands)
+        - [Direct Memory Operands](#direct-memory-operands-better-known-as-immediate-operands)
+            - [Indirect Operands](#indirect-operands)
+            - [Indirect with Displacement](#indirect-with-displacement)
+            - [Indirect with displacement and scaled index](#indirect-with-displacement-and-scaled-index)
+- [Commonly Used Instructions](#commonly-used-instructions)
+    - [Aritmetic](#aritmetic)
+    - [Boolean Algebra](#boolean-algebra-1)
+    - [Branching and Subroutines](#branching-and-subroutines)
+    - [Bit Manipulation](#bit-manipulation)
+    - [Register Manipulation, Casting/Conversions](#register-manipulation-castingconversions)
+    - [Flags Manipulation](#flags-manipulation)
+    - [Stack Manipulation](#stack-manipulation)
+- [Assembler Source, Directives,  and Macros](#assembler-source-directives--and-macros)
+    - [Assembler Directives](#assembler-directives)
+        - [section type](#section-type-options)
+        - [bits 16, bits 32, and bits 64, use16, use32, use64](#bits-16-bits-32-and-bits-64-use16-use32-use64)
+        - [Comments](#comments)
+        - [Constants](#constants)
+        - [Program Variables and Strings](#program-variables-and-strings)
+        - [Assembler Variables and Labels](#assembler-variables-and-labels)
+        - [Repetion](#repetion)
+        - [Macros](#macros)
+        - [Conditional Assembly](#conditional-assembly)
+        - [Alignment](#alignment)
+        - [Structures](#structures)
+        - [Includes](#includes)
+- [Hello, World](#hello-world)
+    - [MacOS Version](#macos-version)
+    - [Linux version](#linux-version)
+    - [How it works](#how-it-works)
+        - [Linux Syscalls](#linux-syscalls)
+        - [MacOS Syscalls](#macos-syscalls)
+
 ## Introduction
 
 How CPUs work has become something of a lost art.  There are a small percentage of software engineers that need to understand the inner workings of CPUs, typically those who work on embedded software or operating systems, or compilers or JIT compilers...
@@ -41,7 +102,7 @@ In this tutorial, I will cover the basics of programming the x64/AMD64 CPU in as
 
 The smallest piece of information that a CPU processes is a "bit."  A bit is a small integer or boolean type value, either 0 (off/false) or 1 (on/true).
 
-Bits are then organized as "bytes," or 8 bits grouped together.  You can visualize a byte like this:
+Bits are then organized as "bytes", or 8 bits grouped together.  You can visualize a byte like this:
 
 ```
 76543210
@@ -372,7 +433,7 @@ For all intents and purposes, the Intel and AMD processors have the same registe
 
 ### General Purpose Registers
 
-You have 4 general purpose registers, A, B, C, and D, though we don't use these specific names for the rgisters.  The size of the register/contents matters.  So for a byte value, we use AL or AH, or BL/BH, or CL/CH, or DL/DH.  The L means "low order byte" and H means "high order byte."  For word values, we use AX, BX, CX, and DX.  For 32 bit word values, we use EAX, EBX, ECX, and EDX.  And for 64 bit word values, we use RAX, RBX, RCX, and RDX.
+You have 4 general purpose registers, A, B, C, and D, though we don't use these specific names for the registers.  The size of the register/contents matters.  So for a byte value, we use AL or AH, or BL/BH, or CL/CH, or DL/DH.  The L means "low order byte" and H means "high order byte."  For word values, we use AX, BX, CX, and DX.  For 32 bit word values, we use EAX, EBX, ECX, and EDX.  And for 64 bit word values, we use RAX, RBX, RCX, and RDX.
 
 When we use the registers whose size are smaller than 64 bits, the remaining bits in the register are not affected.  For example, if AX contains 0x0102 and we load 0x03 into AL, AX will contain 0x0103.  This will only matter if you load bytes into registers and add word registers together, in error.  There might be tricks you play to take advantage of the nature of the register loads/stores.
 
@@ -559,7 +620,7 @@ foo:
 
 Note the use of indirect with offset addressing modes!
 
-#### indirect with displacement and scaled index
+#### Indirect with displacement and scaled index
 
 This addressing mode is used to access array elements.  To illustrate how this mode works:
 
@@ -1127,7 +1188,7 @@ Hello, world!
 
 MacOS and Linux provide quite a few syscalls each, or operating system calls that we can call from any language.  There are quite a few syscalls in common between the two, but they are different flavors of Unix (linux vs. BSD-ish/MacOS).  The two flavors have several syscalls that are provided in one OS but not the other.  The syscall numbers (passed in rax) are also different between the operating systems.
 
-The C libraries contain code similar to our code above, to write strings to a file.  For our purposes we use the file number for stdout to write to he console.
+The C libraries contain code similar to our code above, to write strings to a file.  For our purposes we use the file number for stdout to write to the console.
 
 For most C calls that are not provided by a library or the standard C/C++ libraries, there is a syscall.  For example, malloc and free are provided by libc so there is no syscall for it.  However, sbrk() is not provided by the libraries and is provided as a syscall.
 
