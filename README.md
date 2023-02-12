@@ -41,7 +41,7 @@ In this tutorial, I will cover the basics of programming the x64/AMD64 CPU in as
 
 The smallest piece of information that a CPU processes is a "bit."  A bit is a small integer or boolean type value, either 0 (off/false) or 1 (on/true).
 
-Bits are then organized as "bytes," or 8 bits grouped together.  You can visualize a byte like this:
+Bits are then organized as "bytes", or 8 bits grouped together.  You can visualize a byte like this:
 
 ```
 76543210
@@ -372,7 +372,7 @@ For all intents and purposes, the Intel and AMD processors have the same registe
 
 ### General Purpose Registers
 
-You have 4 general purpose registers, A, B, C, and D, though we don't use these specific names for the rgisters.  The size of the register/contents matters.  So for a byte value, we use AL or AH, or BL/BH, or CL/CH, or DL/DH.  The L means "low order byte" and H means "high order byte."  For word values, we use AX, BX, CX, and DX.  For 32 bit word values, we use EAX, EBX, ECX, and EDX.  And for 64 bit word values, we use RAX, RBX, RCX, and RDX.
+You have 4 general purpose registers, A, B, C, and D, though we don't use these specific names for the registers.  The size of the register/contents matters.  So for a byte value, we use AL or AH, or BL/BH, or CL/CH, or DL/DH.  The L means "low order byte" and H means "high order byte."  For word values, we use AX, BX, CX, and DX.  For 32 bit word values, we use EAX, EBX, ECX, and EDX.  And for 64 bit word values, we use RAX, RBX, RCX, and RDX.
 
 When we use the registers whose size are smaller than 64 bits, the remaining bits in the register are not affected.  For example, if AX contains 0x0102 and we load 0x03 into AL, AX will contain 0x0103.  This will only matter if you load bytes into registers and add word registers together, in error.  There might be tricks you play to take advantage of the nature of the register loads/stores.
 
@@ -559,7 +559,7 @@ foo:
 
 Note the use of indirect with offset addressing modes!
 
-#### indirect with displacement and scaled index
+#### Indirect with displacement and scaled index
 
 This addressing mode is used to access array elements.  To illustrate how this mode works:
 
@@ -1127,7 +1127,7 @@ Hello, world!
 
 MacOS and Linux provide quite a few syscalls each, or operating system calls that we can call from any language.  There are quite a few syscalls in common between the two, but they are different flavors of Unix (linux vs. BSD-ish/MacOS).  The two flavors have several syscalls that are provided in one OS but not the other.  The syscall numbers (passed in rax) are also different between the operating systems.
 
-The C libraries contain code similar to our code above, to write strings to a file.  For our purposes we use the file number for stdout to write to he console.
+The C libraries contain code similar to our code above, to write strings to a file.  For our purposes we use the file number for stdout to write to the console.
 
 For most C calls that are not provided by a library or the standard C/C++ libraries, there is a syscall.  For example, malloc and free are provided by libc so there is no syscall for it.  However, sbrk() is not provided by the libraries and is provided as a syscall.
 
