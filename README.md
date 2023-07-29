@@ -77,7 +77,7 @@ See https://www.cs.drexel.edu/~bls96/museum/cardiac.html.
 
 With CARDIAC, you simulated the memory, operation, and CPU cycles of a mythical CPU.  The numbers and instructions for this CPU were in base 10, so the student doesn't have to understand how to convert to the common base 2, base 8, 8 or base 16 used in computing.  CARDIAC provided a cardboard device that had representation for memory, program steps, and ALU (math and logic operations).
 
-You wrote your program and variables on the cardboard and then step by step, followed the program and performed the operations for each step.  The steps are identified by a single digit, 0-9:
+You wrote your program and variables on the cardboard and then, step by step, followed the program and performed the operations for each step.  The steps are identified by a single digit, 0-9:
 
 - 0 INP read a card into memory
 - 1 CLA clear accumulator and add from memory
@@ -108,7 +108,7 @@ Bits are then organized as "bytes", or 8 bits grouped together.  You can visuali
 76543210
 ```
 
-The digits represent what we call a bit number, and each digit (bits 0-7))may be a 0 or a 1.  A byte can represent an unsigned value of 0-255, or a signed value of -128-127.  Bit 7 of the byte is considered the "sign bit" - if it is 1, then the byte as a signed value is negative, if it is 0, then the byte is positive.  Note that you decide whether the byte is processed as signed or unsigned; more on this later, but for now it is important to understand how the bits make up bytes and signed/unsigned values are represented.
+The digits represent what we call a bit number, and each digit (bits 0-7) may be a 0 or a 1.  A byte can represent an unsigned value of 0-255, or a signed value of -128-127.  Bit 7 of the byte is considered the "sign bit" - if it is 1, then the byte as a signed value is negative, if it is 0, then the byte is positive.  Note that you decide whether the byte is processed as signed or unsigned; more on this later, but for now it is important to understand how the bits make up bytes and signed/unsigned values are represented.
 
 A "word" is two bytes grouped together, which means we have 16 bits together.  You can visualize a word like this:
 ```
@@ -124,7 +124,7 @@ From this point forward, I'll use "word" to mean one of these sized values, unle
 
 When we talk about the value of the word, we typically use base 2, base 4, base 8, base 10, and base 16.  Of these, base 8 isn't used much, but I'll explain a common use case for base 8.
 
-In base 2 (also called "binary""), we simply talk about the value as the bits.  That is, an unsigned byte might be 11111111, or 11101110, and so on.  We might add a lead 0 and terminating b for clarity (and this is the syntax used in assembly programming): 011111111b.
+In base 2 (also called "binary"), we simply talk about the value as the bits.  That is, an unsigned byte might be 11111111, or 11101110, and so on.  We might add a lead 0 and terminating b for clarity (and this is the syntax used in assembly programming): 011111111b.
 
 Base 10 is the number base we use every day.  You count from 0 to 9 for each digit position in base 10.  When you add 1 to the value 9, you clear it (set to 0), and bump the 10s digit.  That is, 9+1 becomes 10.  As you go right to left in base 10, the digits are: n x 10 to the power of 0, n x 10 , or 10 to the power of 1, n x 100, or 10 to the power of 2, and so on.
 
@@ -185,7 +185,7 @@ I promised to discuss a use for Octal, something we might use every day.  In the
 ```
 -rw-r--r--  1 mschwartz  staff   5.9K Feb 16 14:13 README.md
 ```
-See the -rw-r--r-- ?  What we have here is 9 bits in octal.  rw- is 110, r-- is 100, r-- is 100.  So we can convert this to the internal filesystem represenation of 644.  If you want to make a file rw-r--r--, you use the chmod command:
+See the -rw-r--r-- ?  What we have here is 9 bits in octal.  rw- is 110, r-- is 100, r-- is 100.  So we can convert this to the internal filesystem representation of 644.  If you want to make a file rw-r--r--, you use the chmod command:
 ```
 chmod 644 README.md
 ```
@@ -257,11 +257,11 @@ This is a most important concept to grasp!
 
 We use the Boolean Algebra operators on words to achieve useful results.  
 
-A typical use of the AND operator is to clear bits in a value.  If we AND with a value that is a power of 2, we are simple clearing a bit.  n AND 4 clears bit 3 in n. 
+A typical use of the AND operator is to clear bits in a value.  If we AND with a value that is the inverse of a power of 2, we are simply clearing a bit.  n AND !4 clears bit 3 in n. 
 
-A typical use of the OR operator is tto set bits in a value.  If we OR with a value that is a power of 2, we are simply setting a bit.  n OR 4 sets bit 3 in n.
+A typical use of the OR operator is to set bits in a value.  If we OR with a value that is a power of 2, we are simply setting a bit.  n OR 4 sets bit 3 in n.
 
-A great use of the AND operator is to do a modulo of a number to a power of 2.  For example, AND with 3 gets you a result between 0 and 2.  AND with 7 gets y ou a result between 0 and 8.
+A great use of the AND operator is to do a modulo of a number to a power of 2.  For example, AND with 3 gets you a result between 0 and 2.  AND with 7 gets you a result between 0 and 8.
 
 ## Bit Shifting
 
@@ -276,13 +276,13 @@ x01111100b  (bit 0 becomes 0)
 ```
 Note that we have the overflow problem here, as we did with addition.  We have an upper bit that ends up in the "bit bucket" (thrown away).
 
-A left shift of 1 bit is effectively a multply by 2.  Consider 001b<<1 is 010b, or 2.  A left shift of 2 bits is a multiply by 4, and so on.
+A left shift of 1 bit is effectively a multiplication by 2.  Consider 001b<<1 is 010b, or 2.  A left shift of 2 bits is a multiply by 4, and so on.
 
 Shifting to the right works similarly, but we now end up with the high bit being cleared and the low bit in the bit bucket. 
 
 A right shift of 1 bit is effectively a divide by 2. But this right shift will take a negative number and make it positive because the sign bit is cleared.  So we need a second kind of right shift (arithmetic shift right) for signed values that sets the high bit in the result to the high bit in the initial value.
 
-A rotate left/right is the same as a shift, except instead of the lost bit ending up in the bit bucket, it becomes the new high/low bit.
+A rotation left/right is the same as a shift, except instead of the lost bit ending up in the bit bucket, it becomes the new high/low bit.
 
 Other than for the multiply and divide effects, we use bit shifting frequently with Boolean Algebra.  To set bit 3:
 
@@ -335,7 +335,7 @@ HIGH memory address
 | code         |
 | address 0    |
 |              |
-+------------+
++--------------+
 LOW memory address
 ```
 
@@ -359,7 +359,7 @@ The .data and .bss sections are marked as read/write and the .rodata is marked a
 
 The way words of the different sizes are stored in memory is determined by the "endianess" of the CPU.  A CPU that is big endian stores the high byte first in memory, the next highest byte next, ... and finally the lowest byte last.  A CPU that is little endian stores the low byte first, ... the high byte last.
 
-The CPU has special features that enforce these permissions.  If you try to defeat the permissions, a segfault exception is thrown.  The operating system sets up these features when the program is started, and kills the program and potentially (generates a core dump file of the program.  The core dump file can be used later to do forensic debugging/analysis of the failure.
+The CPU has special features that enforce these permissions.  If you try to defeat the permissions, a segfault exception is thrown.  The operating system sets up these features when the program is started, and kills the program and potentially generates a core dump file of the program.  The core dump file can be used later to do forensic debugging/analysis of the failure.
 
 ### MMU
 
@@ -379,13 +379,13 @@ When your program tries to access an address in memory that isn't mapped by the 
 
 If the system is out of memory, the OS might compress programs and/or their data to make more RAM available.  The OS has to decompress this memory when it's those programs' turn to execute, though.  MacOS does this compression, and it's very clever.
 
-Another thing the OS can do when there is an out of memory (OOM)) condition is to "page" one or more 4096 byte pages from memory to the system's swap file/partition.  This frees up enough pages to use to handle the page fault.  When a program that has memory paged to disk is scheduled to run (use the CPU), the code might cause further page faults to read back in the paged memory.  It's possible the program never accesses that memory, and that's perfectly fine.
+Another thing the OS can do when there is an out of memory (OOM) condition is to "page" one or more 4096 byte pages from memory to the system's swap file/partition.  This frees up enough pages to use to handle the page fault.  When a program that has memory paged to disk is scheduled to run (use the CPU), the code might cause further page faults to read back in the paged memory.  It's possible the program never accesses that memory, and that's perfectly fine.
 
 Yet another thing the OS can do is to swap out entire programs (and their data) to the swap file/partition.  When those programs get to run, they have to be entirely read back into memory (and MMU set up), and perhaps swapping another program to disk.  When the system is tight on free memory and is swapping heavily, it will become very unresponsive!
 
 Finally, if the OS cannot resolve the OOM condition with one of those (or potentially other clever) strategies, it just randomly kills a running program.  This seems evil, but what else can it do?
 
-The stack grows down from high memory. If the stack overflows (grows below the memory allocated for it), a page fault occurs and the OS can add additional pages to the memmory map so the stack has more room.
+The stack grows down from high memory. If the stack overflows (grows below the memory allocated for it), a page fault occurs and the OS can add additional pages to the memory map so the stack has more room.
 
 The heap initially has a small but reasonable amount of RAM allocated.  It can be expanded using the ```sbrk``` syscall.  This is what the malloc() function does in C, though the sbrk() function can be called directly if you know what you're doing.
 
@@ -421,15 +421,15 @@ For example, to add two numbers at memory locations (addresses) 0x100 and 0x200 
   store a at 0x3000
 ```
 
-I have just introduced something like a snippet of assembly language code!  We need operations to be able to load memory into registers, add registers together, and store registers to memory.  Each of these operations is a CPU "opcode."  The CPU reads the byte opcode from memory and executes it.  Some opcodes, like the load and store ones require parameters like the address to load from or store to.  These addresses are stored in the program immediately following the opcode.  As we progress, we're going to see that the instruction sizes (op code plus parameters) are different depending on the instruction (op code) and parameters.  
+I have just introduced something like a snippet of assembly language code!  We need operations to be able to load memory into registers, add registers together, and store registers to memory.  Each of these operations is a CPU "opcode."  The CPU reads the byte opcode from memory and executes it.  Some opcodes, like the load and store ones, require parameters like the address to load from or store to.  These addresses are stored in the program immediately following the opcode.  As we progress, we're going to see that the instruction sizes (op code plus parameters) are different depending on the instruction (op code) and parameters.  
 
-In the simplest view of the CPU, the above program is 4 instructions.  The load and store instructions use 1 byte for opcode and 2 more for the addresses.  The add uses just the one byte for the opcode (add b to a).  
+In the simplest view of the CPU, the above program is 4 instructions.  The load and store instructions use 1 byte for opcode and 2 more for the addresses.  The add uses just the one byte for the opcode (add b to a).
 
 Each instruction uses 1 or more "clock cycles," depending on the complexity of the operation.  The load instruction requires a clock cycle to load the opcode, another 2 for each byte of the address, and another 2 to load the value from RAM at the address specified in the parameters, for 5 total clock cycles.  The add instruction takes just 1 clock cycle.  The store takes 5 as well.
 
 ## x64/AMD64 Registers
 
-For all intents and purposes, the Intel and AMD processors have the same registers until you get into exotic features (like hardware video decoding).  I use the term x64 and AMD64 interchangable throughout this tutorial.
+For all intents and purposes, the Intel and AMD processors have the same registers until you get into exotic features (like hardware video decoding).  I use the term x64 and AMD64 interchangeable throughout this tutorial.
 
 ### General Purpose Registers
 
@@ -437,7 +437,7 @@ You have 4 general purpose registers, A, B, C, and D, though we don't use these 
 
 When we use the registers whose size are smaller than 64 bits, the remaining bits in the register are not affected.  For example, if AX contains 0x0102 and we load 0x03 into AL, AX will contain 0x0103.  This will only matter if you load bytes into registers and add word registers together, in error.  There might be tricks you play to take advantage of the nature of the register loads/stores.
 
-AMD64 and x64 add 8 more general purpose registers, R8, R9, R10, R11, R12, R13, R14, and R15.  These are accessed as 8, 16, 33, and 64 bit registers.  R8D through R15D (32 bits), R8W-R15W (16 bits), R8B-R15B (8 bits), and R8-R15 (64 bits).
+AMD64 and x64 add 8 more general purpose registers, R8, R9, R10, R11, R12, R13, R14, and R15.  These are accessed as 8, 16, 33, and 64 bit registers.  R8 through R15 (64 bits), R8D-R15D (32 bits), R8W-R15W (16 bits), and R8B-R15B (8 bits).
 
 ### Special Purpose Registers
 
@@ -458,19 +458,19 @@ The RIP register contains the address of the next instruction to be executed.  T
 #### Flags
 The FLAGS register is 64 bits containing information provided by the CPU to the program, and commands from the program to the CPU.  Not all the bits are used.  See https://en.wikipedia.org/wiki/FLAGS_register.
 
-An example of the bits in FLAGS set by the CPU is the Carry Flag.  It is set when you have a carry after an arithmetic operation.  For example, if you add 1 to the AL regsister that contains 255, you will get AL=0, Carry = 1.  If you add 1 to AL=254, the Carry will be 0.
+An example of the bits in FLAGS set by the CPU is the Carry Flag.  It is set when you have a carry after an arithmetic operation.  For example, if you add 1 to the AL register that contains 255, you will get AL=0, Carry = 1.  If you add 1 to AL=254, the Carry will be 0.
 
 An example of the bits in the FLAGS set by the program is the Direction Flag.  If this is 0, the fill/copy/etc. instructions work from start address forward (auto-increments SI and DI).  If this is 1, the operations are done backward (auto-decrement).
 
-The FLAGS register is there to use, but we might really only directly use the Carry bit and Direction bit.  We might use the Carry bit to return a true/false result from a function.  The CLC and STC instructions clear and set the Carry bit.  
+The FLAGS register is there to use, but we might really only directly use the Carry bit and Direction bit.  We might use the Carry bit to return a true/false result from a function.  The CLC and STC instructions clear and set the Carry bit.  
 
 The various branch instructions use the Carry and Zero bits internally.
 
-There are several instructions that set and clear these bits, programatically.
+There are several instructions that set and clear these bits, programmatically.
 
 # AMD64 Instruction Set
 
-You will learn the instruction set as you go.  The instruction set is documented as a reference manual, not a programming manual.  That is, each instruction is documented as to what it does.  But there is no particular "how to use this instruction" documentation.  "
+You will learn the instruction set as you go.  The instruction set is documented as a reference manual, not a programming manual.  That is, each instruction is documented as to what it does.  But there is no particular "how to use this instruction" documentation.
 
 You can find the instruction set documented on various Web Sites.  The best source is the Intel Programmer's Manual or the AMD64 Programmer's Manual.
 
@@ -502,7 +502,7 @@ Before we look at some of these instructions, we need to look at addressing mode
 
 ## Addressing Modes
 
-Addressing modes are the means by which operands to instructions are described and how they execute.  For example, Register operands indicate specific registers, but memory operands can be addressed through a variety of combinations of offsets and/or regsister contents.
+Addressing modes are the means by which operands to instructions are described and how they execute.  For example, Register operands indicate specific registers, but memory operands can be addressed through a variety of combinations of offsets and/or register contents.
 
 To examine the addressing modes, we'll use the MOV instruction, which copies a value in a register to memory or loads a value to a register from memory.
 
@@ -542,7 +542,7 @@ The purpose of this addressing mode is to facilitate accessing a structure and i
 struct {
   char *name,
        *address,
-	   *phone;
+       *phone;
 } person;
 person.name = nullptr;
 person.address = nullptr;
@@ -739,12 +739,12 @@ There are two styles of assembly source for x64: Intel and AT&T.
 * Intel syntax expects operands to be specified as ```destination, source```.
 * AT&T syntax expects operands to be specified as ```source, destination```.  
 
-The NASM assembler uses Intel sysntax and the GNU/LLVM assemblers can use either Intel or AT&T; you choose which using an assembler directive.  
+The NASM assembler uses Intel syntax and the GNU/LLVM assemblers can use either Intel or AT&T; you choose which using an assembler directive.  
 
 ## Assembler Directives
 An assembler directive is not machine instructions.  Instead, these are used to convey information to the assembler to effect code generation as you prefer.  Assembler directives are specific to the assembler you are using and the source code using these is not portable between assemblers.  The nature of (order of) Intel and AT&T syntax makes code written for one not portable to an assembler using the other.
 
-The gas (gnu/llvm) assembler uses the .intel_syntax directive to tell the assembler that the source format of the file is Intel syntax.  Otherwise AT&T syntax is assumed.
+The gas (gnu/llvm) assembler uses the .intel_syntax directive to tell the assembler that the source format of the file is Intel syntax.  Otherwise, AT&T syntax is assumed.
 
 I'm not going to expand on all the directives for gas and NASM.  There are basically similar directives for both assemblers.  I prefer using NASM, though there is no reason you can't use gas - whichever you prefer.  I'll document the common NASM directives here.
 
@@ -772,7 +772,7 @@ This document assumes 64-bit mode, so we use ```bits 64```.  In 64-bit mode, the
 
 In a NASM source program, the semicolon (;) character introduces the start of a comment.  All characters from that point on, to the end of the line, are ignored.
 
-Note that gas supports a couple of comment styles, including ```/* */``` C-style multiline comments, or pound sign ```#``` to instroduce the start of a comment.
+Note that gas supports a couple of comment styles, including ```/* */``` C-style multiline comments, or pound sign ```#``` to introduce the start of a comment.
 
 ### Constants
 NASM supports constants of the form:
@@ -1186,7 +1186,7 @@ Hello, world!
 
 ## How it works
 
-MacOS and Linux provide quite a few syscalls each, or operating system calls that we can call from any language.  There are quite a few syscalls in common between the two, but they are different flavors of Unix (linux vs. BSD-ish/MacOS).  The two flavors have several syscalls that are provided in one OS but not the other.  The syscall numbers (passed in rax) are also different between the operating systems.
+MacOS and Linux provide quite a few syscalls each, or operating system calls that we can call from any language.  There are quite a few syscalls in common between the two, but they are different flavors of Unix (Linux vs. BSD-ish/MacOS).  The two flavors have several syscalls that are provided in one OS but not the other.  The syscall numbers (passed in rax) are also different between the operating systems.
 
 The C libraries contain code similar to our code above, to write strings to a file.  For our purposes we use the file number for stdout to write to the console.
 
