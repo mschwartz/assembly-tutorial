@@ -166,7 +166,7 @@ This table makes the conversion simple.  But if you practice using hex, you will
 0100 | 4
 0101 | 5
 0110 | 6
-0117 | 7
+0111 | 7
 1000 | 8
 1001 | 9
 1010 | A
