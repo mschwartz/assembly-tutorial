@@ -261,7 +261,7 @@ A typical use of the AND operator is to clear bits in a value.  If we AND with a
 
 A typical use of the OR operator is to set bits in a value.  If we OR with a value that is a power of 2, we are simply setting a bit.  n OR 4 sets bit 3 in n.
 
-A great use of the AND operator is to do a modulo of a number to a power of 2.  For example, AND with 3 gets you a result between 0 and 2.  AND with 7 gets you a result between 0 and 8.
+A great use of the AND operator is to do a modulo of a number to a power of 2.  For example, AND with 3 gets you a result between 0 and 3.  AND with 7 gets you a result between 0 and 7.
 
 ## Bit Shifting
 
