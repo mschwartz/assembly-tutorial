@@ -437,11 +437,11 @@ You have 4 general purpose registers, A, B, C, and D, though we don't use these 
 
 When we use the registers whose size are smaller than 64 bits, the remaining bits in the register are not affected.  For example, if AX contains 0x0102 and we load 0x03 into AL, AX will contain 0x0103.  This will only matter if you load bytes into registers and add word registers together, in error.  There might be tricks you play to take advantage of the nature of the register loads/stores.
 
-AMD64 and x64 add 8 more general purpose registers, R8, R9, R10, R11, R12, R13, R14, and R15.  These are accessed as 8, 16, 33, and 64 bit registers.  R8 through R15 (64 bits), R8D-R15D (32 bits), R8W-R15W (16 bits), and R8B-R15B (8 bits).
+AMD64 and x64 add 8 more general purpose registers, R8, R9, R10, R11, R12, R13, R14, and R15.  These are accessed as 8, 16, 32, and 64 bit registers.  R8 through R15 (64 bits), R8D-R15D (32 bits), R8W-R15W (16 bits), and R8B-R15B (8 bits).
 
 ### Special Purpose Registers
 
-The RCX/RCX/CX (CX) register doubles as a counter for dedicated instructions.  The AMD64 instruction set includes instructions to fill, copy, and compare memory, and loops that use this register as the number of bytes/words/dwords/qwords to fill/copy/compare.  The special loop instructions use this register as the loop counter as well.
+The RCX/ECX/CX (CX) register doubles as a counter for dedicated instructions.  The AMD64 instruction set includes instructions to fill, copy, and compare memory, and loops that use this register as the number of bytes/words/dwords/qwords to fill/copy/compare.  The special loop instructions use this register as the loop counter as well.
 
 The RSI/ESI/SI and RDI/EDI/DI/ registers are general purpose "source" and "destination" registers for the fill, copy, and compare instructions.
 
