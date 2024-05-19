@@ -265,14 +265,14 @@ A great use of the AND operator is to do a modulo of a number to a power of 2.  
 
 ## Bit Shifting
 
-You can shift a byte to the left (<< operator in C) 1-7 bits.  For example:
+You can shift a bit to the left (<< operator in C) 1-7 bits.  For example:
 
 ```
-001111101b << 1 = 001111100b
+001111101b << 1 = 011111010b
 
  001111101b  shifted left becomes
  ////////
-x01111100b  (bit 0 becomes 0)
+x011111010b  (bit 0 becomes 0, bit 1 becomes 1, bit 2 becomes 0)
 ```
 Note that we have the overflow problem here, as we did with addition.  We have an upper bit that ends up in the "bit bucket" (thrown away).
 
@@ -284,9 +284,11 @@ A right shift of 1 bit is effectively a divide by 2. But this right shift will t
 
 A rotation left/right is the same as a shift, except instead of the lost bit ending up in the bit bucket, it becomes the new high/low bit.
 
-Other than for the multiply and divide effects, we use bit shifting frequently with Boolean Algebra.  To set bit 3:
+Other than for the multiply and divide effects, we use bit shifting frequently with Boolean Algebra.
 
 ```
+To set bit 3:
+
 n | (1<<3)
 
 To clear bit 3:
