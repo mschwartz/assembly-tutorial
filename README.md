@@ -207,7 +207,7 @@ Multiplication of two values requires a double-sized result, or you lose a lot m
 
 ## Boolean Algebra
 
-Boolean Algebra is a form of math that we use to deal with true/false values.  We use Boolean Algebra all the time in various programming languages, with operators like & (AND), | (OR), ^ (exclusive XOR, or XOR), and ! (NOT), ~ (also NOT) and so on.  These operators are equivalent to "math-like" operators.
+Boolean Algebra is a form of math that we use to deal with true/false values.  We use Boolean Algebra all the time in various programming languages, with operators like & (AND), | (OR), ^ (exclusive OR, or XOR), and ! (NOT), ~ (also NOT) and so on.  These operators are equivalent to "math-like" operators.
 
 The simplest way to visualize Boolean Algebra is using single bit values and truth tables.  0 = false, 1 = true.  For single bit value operands, there are only (always) 4 combinations possible.
 
