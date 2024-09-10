@@ -420,7 +420,7 @@ For example, to add two numbers at memory locations (addresses) 0x100 and 0x200 
   load value at 0x100 into a
   load value at 0x200 into b
   add a and b, leaving result in a
-  store a at 0x3000
+  store a at 0x300
 ```
 
 I have just introduced something like a snippet of assembly language code!  We need operations to be able to load memory into registers, add registers together, and store registers to memory.  Each of these operations is a CPU "opcode."  The CPU reads the byte opcode from memory and executes it.  Some opcodes, like the load and store ones, require parameters like the address to load from or store to.  These addresses are stored in the program immediately following the opcode.  As we progress, we're going to see that the instruction sizes (op code plus parameters) are different depending on the instruction (op code) and parameters.  
