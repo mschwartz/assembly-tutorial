@@ -530,7 +530,7 @@ This mode moves a constant into a register.  The constant is encoded in the inst
 
 This mode uses a register as the address of a memory location to be operated on (e.g. load from, store to).  For example,
 ```
-        mov (rax), rbx   ; store contents of rbx to memory location contained in rax 
+        mov [rax], rbx   ; store contents of rbx to memory location contained in rax
 ```
 
 #### Indirect with Displacement
