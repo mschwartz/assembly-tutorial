@@ -75,7 +75,7 @@ Assembly language was one of the first languages I ever learned.  Back in the ea
 
 See https://www.cs.drexel.edu/~bls96/museum/cardiac.html.
 
-With CARDIAC, you simulated the memory, operation, and CPU cycles of a mythical CPU.  The numbers and instructions for this CPU were in base 10, so the student doesn't have to understand how to convert to the common base 2, base 8, 8 or base 16 used in computing.  CARDIAC provided a cardboard device that had representation for memory, program steps, and ALU (math and logic operations).
+With CARDIAC, you simulated the memory, operation, and CPU cycles of a mythical CPU.  The numbers and instructions for this CPU were in base 10, so the student doesn't have to understand how to convert to the common base 2, base 8 or base 16 used in computing.  CARDIAC provided a cardboard device that had representation for memory, program steps, and ALU (math and logic operations).
 
 You wrote your program and variables on the cardboard and then, step by step, followed the program and performed the operations for each step.  The steps are identified by a single digit, 0-9:
 
