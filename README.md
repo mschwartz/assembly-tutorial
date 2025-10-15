@@ -203,7 +203,7 @@ What happens when we add 1 to a byte size value of 255?  We only have 8 bits for
 
 All this extends to 32 bit and 64 bit words.
 
-Multiplication of two values requires a double-sized result, or you lose a lot more than just the 9th bit!  Consider 255 x 255 = 65025 (0xfe01), which fits in 16 bits but not in 8.  If we have a byte result, we get 0x01 due to the overflow, losing over 65000 in result value.
+Multiplication of two values requires a double-sized result, or you lose a lot more than just the 9th bit!  Consider 255 x 255 = 65025 (0xfe01), which fits in 16 bits but not in 8.  If we have a byte result, we get 0x01 due to the overflow, losing 65024 in the result value.
 
 ## Boolean Algebra
 
