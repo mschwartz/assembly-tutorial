@@ -152,7 +152,7 @@ The pattern here is that the max value is 2 to the number of bits minus 1.  That
 When we convert a binary byte to hex, we visualize it something like this:
 
 ```
-76543210 is 7654 3210
+10100101 is 1010 0101
 ```
 We've grouped the bits as two nybbles.  We can then convert the two nybbles (4 bits each) to two hex digits.
 
