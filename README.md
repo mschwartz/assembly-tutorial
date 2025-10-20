@@ -402,7 +402,7 @@ This is a hard program crash, and the operating system will terminate the progra
 If your program attempts to divide by zero, this exception is raised and the program is terminated.
 
 #### Invalid Opcode
-If your program somehow executes instructions that are not valid x64/amd64 instructions, this exception is raise and the program is terminated.  This will occur, for example, if you push a random number on the stack and then return.  Your program starts executing at that random address and who knows what data are there?  If the random number/return causes the program to execute outside its address space, you get a Segfault instead.
+If your program somehow executes instructions that are not valid x64/amd64 instructions, this exception is raised and the program is terminated.  This will occur, for example, if you push a random number on the stack and then return.  Your program starts executing at that random address and who knows what data are there?  If the random number/return causes the program to execute outside its address space, you get a Segfault instead.
 
 #### General Protection 
 If your program attempts to execute a privileged instruction, this exception is raised and the program is terminated.  There are quite a few privileged instructions, such as CLI/STI (disable/enable interrupts).  An OS should not allow programs to disable interrupts, or your multitasking stops working!
