@@ -39,7 +39,7 @@ This tutorial is aimed at novices and beginners who want to learn the first thin
             - [Indirect with Displacement](#indirect-with-displacement)
             - [Indirect with displacement and scaled index](#indirect-with-displacement-and-scaled-index)
 - [Commonly Used Instructions](#commonly-used-instructions)
-    - [Aritmetic](#aritmetic)
+    - [Arithmetic](#Arithmetic)
     - [Boolean Algebra](#boolean-algebra-1)
     - [Branching and Subroutines](#branching-and-subroutines)
     - [Bit Manipulation](#bit-manipulation)
@@ -644,7 +644,7 @@ Note that member may be 0 - in this case, rsi simply contains the address of the
 
 # Commonly Used Instructions
 
-## Aritmetic
+## Arithmetic
 
 ```
 ADC - add a value, plus 
