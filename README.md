@@ -785,7 +785,7 @@ NASM supports constants of the form:
 ```
 
 ### Program Variables and Strings
-Programming is uselss if you can't create variables and create and operate on strings.  The assemmbler provides directives to reserve space for variables or to define initialized memory. 
+Programming is uselss if you can't create variables and create and operate on strings.  The assembler provides directives to reserve space for variables or to define initialized memory. 
 
 Resserving space examples:
 ```
