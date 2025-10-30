@@ -677,7 +677,7 @@ SYSCALL - call an OS function (Linux, Mac)
 ENTER - make stack from for procedure parameters
 LEAVE - high level procedure exit
 RET - return from subroutine
-CMP - compare two operaands
+CMP - compare two operands
 JA - jump if result of unsigned compare is above
 JAE - jump if result of unsigned compare is above or equal
 JB - jump if result of unsigned compare is below
