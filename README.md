@@ -985,7 +985,7 @@ What happens is we have duplicate local labels and the assembler generates an er
 ```
 
 ### Conditional Assembly
-NASM provides ```%if```, ```%elif```, ```%else```, and ```%endif``` directives that allow for conditional assembly.  
+NASM provides the ```%if```, ```%elif```, ```%else```, and ```%endif``` directives that allow for conditional assembly.
 
 ```
 ; a totally contrived useless example, for illustrative purposes
@@ -997,7 +997,7 @@ NASM provides ```%if```, ```%elif```, ```%else```, and ```%endif``` directives t
 %endif
 ```
 
-NASM also provides ```%ifdef``` directive that works with ```%elif``` and the other conditional assembly directives.  Instead of testing a condition as ```%if``` does, it tests the existance 
+NASM provides the ```%ifdef``` directive that works with ```%elif``` and the other conditional assembly directives.  Instead of testing a condition as ```%if``` does, it tests the existance.
 
 ```
 ; comment out the undef to enable the LINUX "do things" code
@@ -1011,7 +1011,7 @@ NASM also provides ```%ifdef``` directive that works with ```%elif``` and the ot
 %endif
 ```
 
-NASM provides the ```%ifidn``` directive that works with ```%elif``` and the other conditional assembly directives. NASM provides default defined variables that you can use to conditionally assemble using ```%ifidn```.  A particularly useful one is __?OUTPUT_FORMMAT?__ which you can test to determine whether to generate code for Linux or MacOS (or other):
+NASM provides the ```%ifidn``` directive that works with ```%elif``` and the other conditional assembly directives.  NASM provides default defined variables that you can use to conditionally assemble using ```%ifidn```.  A particularly useful one is __?OUTPUT_FORMMAT?__ which you can test to determine whether to generate code for Linux or MacOS (or other):
 
 ```
 %ifidn __?OUTPUT_FORMAT__, maco64
