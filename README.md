@@ -663,7 +663,7 @@ LEA - load effective address (formed by some expression / addressing mode) into 
 
 ## Boolean Algebra
 ```
-AND - logical AND to registers together
+AND - logical AND two registers together
 NOT - one's complement (invert all the bits in the operand)
 OR - logical OR
 XOR - logical exclusive or
