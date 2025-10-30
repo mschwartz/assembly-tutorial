@@ -1028,11 +1028,13 @@ See: https://nasm.us/xdoc/2.15.03rc8/html/nasmdoc5.html for all the predefined v
 As you are writing your code, you may want instructions or data aligned on a word, dword, qword, or other size boundaries.  Typical uses are to align code on word/dword/qword boundaries.  You get a performance boost by having the target of a branching instruction such as jmp, call, and so on.
 
 ```
-    align 8 ; align next code/data generated at next 8 byte boundary/address
-	align 16 ; align next code/data at next 16 byte boundary
-	
+    align 8 ; align next data generated at next 8 byte boundary/address
 	db 'hello'
-	align 8
+
+	align 16 ; align next data at next 16 byte boundary
+	db 'world'
+
+	align 8 ; align next code at next 16 byte boundary
 my_code_is_aligned:
 ```
 
