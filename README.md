@@ -848,7 +848,7 @@ loop:
 message:    db 'hello, world!', 13, 10, 0 ; you can access message in an instruction:
 ```
 
-A Variable is a string of text that refer to any numeric value you like, with a few exceptions. A common use is to define constants/expressions, as you would use ```#define``` in "C".  You use the EQU directive to specify the variable's value.    
+A variable is a string of text that refers to any numeric value you like, with a few exceptions. A common use is to define constants/expressions, as you would use ```#define``` in "C".  You use the EQU directive to specify the variable's value.    
 
 Examples:
 ```
