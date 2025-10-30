@@ -920,7 +920,7 @@ stars:  times 32 db '*' ; creates 32 bytes containing * at memory location "star
 ```
 
 ### Macros
-A macro is similar to a subroutine, but is substituted inline and has powerful text processing/substitution factilities.
+A macro is similar to a subroutine, but is substituted inline and has powerful text processing/substitution facilities.
 
 A macro is defined using the ```%macro``` and ```%endmacro``` directives.  Everything between these two directives is the content of the macro, or the text to be substituted.  The ```%macro``` directive requires the number of parameters to the macro.
 
