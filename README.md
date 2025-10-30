@@ -1092,7 +1092,7 @@ a_company: istruc Contact
 NASM provides two commonly used include directives: 
 ```
     %include "path/to/file"
-    %incbin"path/to/file"
+    %incbin "path/to/file"
 ```
 
 The ```%include``` directive works like the "C" ```#include``` directive - it simply reads the specified file in place and assembles it as if it were part of the current file.  You can arbitrarily nest these includes, like you do in "C".
