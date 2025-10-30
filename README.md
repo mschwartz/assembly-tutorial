@@ -1039,17 +1039,17 @@ my_code_is_aligned:
 Alignment is also useful for data structure definitions so your assembly structs can match up with ones defined in C.
 
 ### Structures
-You can define high-level like structures using the ```%struc``` and ```%endstruc``` directives.  The ```%struc``` directive takes one parameter, the name of the structure.  The structure members are defined using the resb/resd/resw/resq space allocation directives.  The align directives are used to align structure members on the desired boundaries.
+You can define high-level structures using the ```struc``` and ```endstruc``` directives.  The ```struc``` directive takes one parameter, the name of the structure.  The structure members are defined using the resb/resd/resw/resq space allocation directives.  The align directives are used to align structure members on the desired boundaries.
 
 ```
-%struc Contact
+struc Contact
 .company: resb 1 ; true for company, false for individual
    align 2
 .company_id: resd 1 ; identifier
 .name: resb 64 ; max 64 characters for name
 .address: resb 64 ; also 64 for address
 .phone: resb 16 ; 16 characters for phone number
-%endstruc
+endstruc
 ```
 
 Using a structure is straightforward:
@@ -1076,7 +1076,7 @@ Using a structure is straightforward:
    ...
 ```
 
-You use the ```%istruc``` and ```%iend``` directives to declare instances of structures.
+You use the ```istruc``` and ```iend``` directives to declare instances of structures.
 
 ```
 a_company: istruc Contact
@@ -1085,7 +1085,7 @@ a_company: istruc Contact
   at .name, db 'Engulf and Devour Corp', 0
   at .address, db '1 Main Street, Anytown USA', 0
   at .phone, db '1-800-devour!', 0
-%iend
+iend
 ```
 
 ### Includes
