@@ -787,7 +787,7 @@ NASM supports constants of the form:
 ### Program Variables and Strings
 Programming is uselss if you can't create variables and create and operate on strings.  The assemmbler provides directives to reserve space for variables or to define initialized memory. 
 
-Resserving space examples:
+Reserving space examples:
 ```
     resb 1  ; reserve 1 byte
 	resw 1  ; reserve 1 word (2 bytes)
