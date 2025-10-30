@@ -1011,10 +1011,10 @@ NASM also provides ```%ifdef``` directive that works with ```%elif``` and the ot
 %endif
 ```
 
-NASM provides the ```%ifidn``` directive that works with ```%elif``` and the other conditional assembly directives. NASM provides default defined variables that you can use to conditionally assemble using ```%ifidn```.  A particularly useful one is __?OUTPUT_FORMMAT?__ which you can test to determine whether to generate code for Linux or MacOS (or other):
+NASM provides the ```%ifidn``` directive that works with ```%elif``` and the other conditional assembly directives.  NASM provides default defined variables that you can use to conditionally assemble using ```%ifidn```.  A particularly useful one is __?OUTPUT_FORMAT?__ which you can test to determine whether to generate code for Linux or MacOS (or other):
 
 ```
-%ifidn __?OUTPUT_FORMAT__, maco64
+%ifidn __?OUTPUT_FORMAT?__, macho64
   ; do macos stuff
 %else
   ; do linux stuff
