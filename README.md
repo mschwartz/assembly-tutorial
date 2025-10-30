@@ -674,7 +674,7 @@ TEST - logical compare
 ```
 CALL - call a subroutine/function/procedure
 SYSCALL - call an OS function (Linux, Mac)
-ENTER - make stack from for procedure parameters
+ENTER - make stack for procedure parameters
 LEAVE - high level procedure exit
 RET - return from subroutine
 CMP - compare two operaands
