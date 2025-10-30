@@ -744,7 +744,7 @@ There are two styles of assembly source for x64: Intel and AT&T.
 The NASM assembler uses Intel syntax and the GNU/LLVM assemblers can use either Intel or AT&T; you choose which using an assembler directive.  
 
 ## Assembler Directives
-An assembler directive is not machine instructions.  Instead, these are used to convey information to the assembler to effect code generation as you prefer.  Assembler directives are specific to the assembler you are using and the source code using these is not portable between assemblers.  The nature of (order of) Intel and AT&T syntax makes code written for one not portable to an assembler using the other.
+Assembler directives are not machine instructions.  Instead, these are used to convey information to the assembler to effect code generation as you prefer.  Assembler directives are specific to the assembler you are using and the source code using these is not portable between assemblers.  The nature of (order of) Intel and AT&T syntax makes code written for one not portable to an assembler using the other.
 
 The gas (gnu/llvm) assembler uses the .intel_syntax directive to tell the assembler that the source format of the file is Intel syntax.  Otherwise, AT&T syntax is assumed.
 
