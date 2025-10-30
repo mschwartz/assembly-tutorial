@@ -1109,7 +1109,7 @@ my_gif_size equ $-my_gif
 
 ## MacOS Version
 
-See hello-world/ directory for a build script and this assembly source.
+See the hello-world/ directory for a build script and this assembly source.
 
 ```
 ; Use the build-macos.sh script to assemble and link this.
