@@ -971,7 +971,7 @@ The problem with our print macro is that it generates .message and .over local l
    print "goodbye cruel world!"
 ```
 
-What happens is we have duplicate local labels and the compiler generates an error.  Local labels are incredibly useful in macros, so there has to be a way, and there is.   Local labels within macros are defined using the form ```%%label```.  The assembler generates a uniqe label name when expanding the macro.  This is the working print macro:
+What happens is we have duplicate local labels and the assembler generates an error.  Local labels are incredibly useful in macros, so there has to be a way, and there is.   Local labels within macros are defined using the form ```%%label```.  The assembler generates a uniqe label name when expanding the macro.  This is the working print macro:
 
 ```
 %macro print 1
