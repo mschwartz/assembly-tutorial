@@ -1005,7 +1005,6 @@ NASM also provides ```%ifdef``` directive that works with ```%elif``` and the ot
 %undef LINUX
 %ifdef LINUX
 ; do linux things
-%endif
 %else
 ; do mac things
 %endif
